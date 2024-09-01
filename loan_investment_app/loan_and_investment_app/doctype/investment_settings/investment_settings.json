@@ -1,0 +1,76 @@
+{
+ "actions": [],
+ "autoname": "autoincrement",
+ "creation": "2024-08-31 14:41:35.203120",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "capital_account",
+  "investment_interest",
+  "portfolio_account"
+ ],
+ "fields": [
+  {
+   "fieldname": "investment_interest",
+   "fieldtype": "Link",
+   "in_filter": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": " Interest on Investment Account",
+   "options": "Account"
+  },
+  {
+   "fieldname": "portfolio_account",
+   "fieldtype": "Link",
+   "in_filter": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Investment Portfolio Account",
+   "options": "Account"
+  },
+  {
+   "fieldname": "capital_account",
+   "fieldtype": "Link",
+   "in_filter": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Investment's Capital Account",
+   "options": "Account"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2024-09-01 18:26:08.801443",
+ "modified_by": "Administrator",
+ "module": "Loan and Investment App",
+ "name": "Investment Settings",
+ "naming_rule": "Autoincrement",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "All",
+   "select": 1,
+   "share": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

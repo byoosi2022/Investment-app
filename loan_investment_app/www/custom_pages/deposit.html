@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Journal Entry Form</title>
+    <style>
+        /* Basic styling */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+        .form-container {
+            max-width: 600px;
+            margin: auto;
+            background: #fff;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        input, select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <h2>Create Journal Entry</h2>
+        <form id="journalEntryForm">
+            <div class="form-group">
+                <label for="posting_date">Posting Date</label>
+                <input type="date" id="posting_date" name="posting_date" required>
+            </div>
+            <div class="form-group">
+                <label for="trans_type">Transaction Type</label>
+                <select id="trans_type" name="trans_type" required>
+                    <option value="Deposit">Deposit</option>
+                    <option value="Invest">Invest</option>
+                    <option value="Transfer">Transfer</option>
+                    <option value="Withdraw">Withdraw</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="mode_of_payment">Mode of Payment</label>
+                <select id="mode_of_payment" name="mode_of_payment" required>
+                    <!-- Options will be dynamically populated -->
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="party_type">Party Type</label>
+                <select id="party_type" name="party_type" required>
+                    <!-- Options will be dynamically populated -->
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="party">Party</label>
+                <select id="party" name="party" required>
+                    <!-- Options will be dynamically populated based on Party Type -->
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="amount">Amount</label>
+                <input type="number" id="amount" name="amount" step="0.01" required>
+            </div>
+            <div class="form-group">
+                <label for="remarks">Remarks</label>
+                <input type="text" id="remarks" name="remarks">
+            </div>
+            <button type="submit">Submit</button>
+        </form>
+        <p id="responseMessage"></p>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Populate Mode of Payment field
+            fetch('/api/resource/Mode of Payment')
+                .then(response => response.json())
+                .then(data => {
+                    const paymentSelect = document.getElementById('mode_of_payment');
+                    data.data.forEach(payment => {
+                        const option = document.createElement('option');
+                        option.value = payment.name;
+                        option.textContent = payment.mode_of_payment || payment.name;
+                        paymentSelect.appendChild(option);
+                    });
+                })
+                .catch(error => console.error('Error fetching modes of payment:', error));
+
+            // Populate Party Type field
+            fetch('/api/resource/Party Type')
+                .then(response => response.json())
+                .then(data => {
+                    const partyTypeSelect = document.getElementById('party_type');
+                    data.data.forEach(type => {
+                        const option = document.createElement('option');
+                        option.value = type.name;
+                        option.textContent = type.name;
+                        partyTypeSelect.appendChild(option);
+                    });
+                })
+                .catch(error => console.error('Error fetching party types:', error));
+
+            // Populate Party field based on selected Party Type
+            document.getElementById('party_type').addEventListener('change', function() {
+                const partyType = this.value;
+                if (partyType) {
+                    fetch(`/api/resource/${partyType}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            const partySelect = document.getElementById('party');
+                            partySelect.innerHTML = ''; // Clear existing options
+                            data.data.forEach(party => {
+                                const option = document.createElement('option');
+                                option.value = party.name;
+                                option.textContent = party.party_name || party.name;
+                                partySelect.appendChild(option);
+                            });
+                        })
+                        .catch(error => console.error(`Error fetching parties for ${partyType}:`, error));
+                }
+            });
+
+    document.addEventListener('DOMContentLoaded', function() {
+    // Fetch the API key for the logged-in user
+    fetch('/api/method/frappe.auth.get_logged_user')
+        .then(response => response.json())
+        .then(data => {
+            const user = data.message;
+            return fetch(`/api/resource/User/${user}`);
+        })
+        .then(response => response.json())
+        .then(data => {
+            const apiKey = data.data.api_key;
+            document.getElementById('journalEntryForm').addEventListener('submit', function(event) {
+                event.preventDefault();
+
+                const formData = {
+                    posting_date: document.getElementById('posting_date').value,
+                    trans_type: document.getElementById('trans_type').value,
+                    mode_of_payment: document.getElementById('mode_of_payment').value,
+                    party_type: document.getElementById('party_type').value,
+                    party: document.getElementById('party').value,
+                    amount: parseFloat(document.getElementById('amount').value),
+                    remarks: document.getElementById('remarks').value
+                };
+
+                fetch('/api/resource/Investment App', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `token ${apiKey}`
+                    },
+                    body: JSON.stringify(formData)
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.data) {
+                        document.getElementById('responseMessage').textContent = 'Journal Entry created successfully!';
+                    } else {
+                        document.getElementById('responseMessage').textContent = `Error: ${data.message}`;
+                    }
+                })
+                .catch(error => {
+                    document.getElementById('responseMessage').textContent = `Error: ${error}`;
+                });
+            });
+        })
+        .catch(error => {
+            document.getElementById('responseMessage').textContent = `Error fetching API key: ${error}`;
+        });
+});
+
+        });
+    </script>
+</body>
+</html>

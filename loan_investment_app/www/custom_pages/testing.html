@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Page Title</title>
+    <link rel="stylesheet" href="/assets/frappe/css/frappe.css">
+    <script src="/assets/frappe/js/frappe.min.js"></script>
+</head>
+<body>
+    <!-- Your HTML content here -->
+    
+    <script>
+        // Your JavaScript code that uses frappe
+        document.addEventListener('DOMContentLoaded', function() {
+            // Example of using frappe
+            frappe.call({
+                method: "your_method_path",
+                args: {},
+                callback: function(response) {
+                    console.log(response);
+                }
+            });
+        });
+    </script>
+</body>
+</html>

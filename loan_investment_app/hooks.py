@@ -212,7 +212,20 @@ app_license = "mit"
 # 		"doctype": "{doctype_4}"
 # 	}
 # ]
-
+fixtures = [
+    {
+        "doctype": "Custom Field",
+        "filters": [
+            ["module", "=", "loan_investment_app"]
+        ]
+    },
+    {
+        "doctype": "Client Script",
+        "filters": [
+            ["module", "=", "loan_investment_app"]
+        ]
+    },
+]
 # Authentication and authorization
 # --------------------------------
 

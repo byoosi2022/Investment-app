@@ -216,13 +216,13 @@ fixtures = [
     {
         "doctype": "Custom Field",
         "filters": [
-            ["module", "=", "loan_investment_app"]
+            ["module", "=", "Loan and Investment App"]
         ]
     },
     {
         "doctype": "Client Script",
         "filters": [
-            ["module", "=", "loan_investment_app"]
+            ["module", "=", "Loan and Investment Appp"]
         ]
     },
 ]

@@ -126,8 +126,8 @@ class InvestmentApp(Document):
                         'user_remark': self.remarks
                     })
                 
-                # journal_entry.insert()
-                # journal_entry.submit()  # Uncomment this line to submit the journal entry
+                journal_entry.insert()
+                journal_entry.submit()  # Uncomment this line to submit the journal entry
                 frappe.msgprint(_("Journal Entry created successfully: {0}").format(journal_entry.name))
                 return {"message": _("Journal Entry created successfully!"), "name": journal_entry.name}
             else:

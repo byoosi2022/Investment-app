@@ -12,12 +12,14 @@ def get_logged_in_user_info():
         "current_date": current_date
     }
     
-    # Fetch user permissions related to the investment account
+    # Fetch user permissions related to the investment account where 'allow' is 'Member'
     investment_account = frappe.db.sql("""
+                                       
         SELECT for_value, allow, user
         FROM `tabUser Permission`
-        WHERE user = %s
+        WHERE user = %s AND allow = 'Member'
     """, (user_info["email"],), as_dict=True)
+
 
     # Initialize member_name as None
     member_name = None

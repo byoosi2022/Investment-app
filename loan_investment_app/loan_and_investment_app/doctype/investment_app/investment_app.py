@@ -6,7 +6,7 @@ from frappe import _
 from frappe.model.document import Document
 
 class InvestmentApp(Document):
-    def on_update(self):
+    def on_submit(self):
         self.create_journal()
 
     @frappe.whitelist()
@@ -26,13 +26,14 @@ class InvestmentApp(Document):
 
             # Initialize the investment accounts for deposits
             capital_account = None
-            investment_interest = None
+            company_set = None
+            cost_center = None
             portfolio_account = None
 
             if self.transaction_type == "Deposit" or self.transaction_type in ["Invest", "Transfer", "Withdraw"]:
                 # Fetch the investment account details directly from the database
                 investment_account = frappe.db.sql("""
-                    SELECT capital_account, investment_interest, portfolio_account
+                    SELECT capital_account, investment_interest, portfolio_account,company,cost_center
                     FROM `tabInvestment Settings`
                     LIMIT 1
                 """, as_dict=True)
@@ -42,32 +43,36 @@ class InvestmentApp(Document):
                     frappe.throw(_("Investment account details not found in Investment Settings."))
 
                 capital_account = investment_account[0]['capital_account']
-                investment_interest = investment_account[0]['investment_interest']
+                company_set = investment_account[0]['company']
+                cost_center = investment_account[0]['cost_center']
                 portfolio_account = investment_account[0]['portfolio_account']
                 # frappe.msgprint(_(str(investment_account)))
 
-                # Create a new Journal Entry document
+                # Create a new Journal Entry document 
                 journal_entry = frappe.new_doc('Journal Entry')
                 journal_entry.voucher_type = 'Journal Entry'
+                journal_entry.company = company_set
                 journal_entry.posting_date = self.posting_date
                 journal_entry.user_remark = self.remarks
                 journal_entry.custom_transaction_type = self.transaction_type
                 journal_entry.custom_investmet_id = self.name
 
                 if self.transaction_type == "Deposit":
-                    # Credit capital_account, Debit mode of payment account
+                    # Credit capital_account, Debit mode of payment account cost_center
                     journal_entry.append('accounts', {
                         'account': capital_account,
                         'debit_in_account_currency': 0,
                         'credit_in_account_currency': self.amount,
                         'party_type': "Member",
                         'party': self.party,
+                        'cost_center': cost_center,
                         'user_remark': self.remarks
                     })
                     journal_entry.append('accounts', {
                         'account': default_paid_to_account,
                         'debit_in_account_currency': self.amount,
                         'credit_in_account_currency': 0,
+                        'cost_center': cost_center,
                         'user_remark': self.remarks
                     })
 
@@ -79,6 +84,7 @@ class InvestmentApp(Document):
                         'credit_in_account_currency': 0,
                         'party_type': "Member",
                         'party': self.party,
+                        'cost_center': cost_center,
                         'user_remark': self.remarks
                     })
                     journal_entry.append('accounts', {
@@ -87,6 +93,7 @@ class InvestmentApp(Document):
                         'credit_in_account_currency': self.amount,
                         'party_type': "Member",
                         'party': self.party,
+                        'cost_center': cost_center,
                         'user_remark': self.remarks
                     })
 
@@ -98,6 +105,7 @@ class InvestmentApp(Document):
                         'credit_in_account_currency': 0,
                         'party_type': "Member",
                         'party': self.party,
+                        'cost_center': cost_center,
                         'user_remark': self.remarks
                     })
                     journal_entry.append('accounts', {
@@ -106,6 +114,7 @@ class InvestmentApp(Document):
                         'credit_in_account_currency': self.amount,
                         'party_type': "Member",
                         'party': self.party,
+                        'cost_center': cost_center,
                         'user_remark': self.remarks
                     })
 
@@ -117,12 +126,14 @@ class InvestmentApp(Document):
                         'credit_in_account_currency': 0,
                         'party_type': "Member",
                         'party': self.party,
+                        'cost_center': cost_center,
                         'user_remark': self.remarks
                     })
                     journal_entry.append('accounts', {
                         'account': default_paid_to_account,
                         'debit_in_account_currency': 0,
                         'credit_in_account_currency': self.amount,
+                        'cost_center': cost_center,
                         'user_remark': self.remarks
                     })
                 

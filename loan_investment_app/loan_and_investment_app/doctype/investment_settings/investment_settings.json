@@ -7,7 +7,9 @@
  "field_order": [
   "capital_account",
   "investment_interest",
-  "portfolio_account"
+  "portfolio_account",
+  "cost_center",
+  "company"
  ],
  "fields": [
   {
@@ -36,11 +38,23 @@
    "in_standard_filter": 1,
    "label": "Investment's Capital Account",
    "options": "Account"
+  },
+  {
+   "fieldname": "cost_center",
+   "fieldtype": "Link",
+   "label": "Cost Center",
+   "options": "Cost Center"
+  },
+  {
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "label": "Company",
+   "options": "Company"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-09-01 18:26:08.801443",
+ "modified": "2024-09-03 12:42:04.607980",
  "modified_by": "Administrator",
  "module": "Loan and Investment App",
  "name": "Investment Settings",

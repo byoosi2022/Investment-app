@@ -1,0 +1,53 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2024-09-04 14:08:58.322714",
+ "default_view": "List",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "date",
+  "principal_amount",
+  "amount",
+  "available_amount"
+ ],
+ "fields": [
+  {
+   "fieldname": "date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Date"
+  },
+  {
+   "fieldname": "amount",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Interest Amount"
+  },
+  {
+   "fieldname": "principal_amount",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Principal Amount"
+  },
+  {
+   "fieldname": "available_amount",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Available Amount"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2024-09-04 17:35:52.924969",
+ "modified_by": "Administrator",
+ "module": "Loan and Investment App",
+ "name": "Investment Schedule",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

@@ -8,6 +8,8 @@
   "capital_account",
   "investment_interest",
   "portfolio_account",
+  "percent_interest_amount_account",
+  "investor_withdrawal_payable_account",
   "cost_center",
   "company"
  ],
@@ -50,11 +52,23 @@
    "fieldtype": "Link",
    "label": "Company",
    "options": "Company"
+  },
+  {
+   "fieldname": "percent_interest_amount_account",
+   "fieldtype": "Link",
+   "label": "Percent Interest Amount Account",
+   "options": "Account"
+  },
+  {
+   "fieldname": "investor_withdrawal_payable_account",
+   "fieldtype": "Link",
+   "label": "Investor Withdrawal Payable Account",
+   "options": "Account"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-09-03 12:42:04.607980",
+ "modified": "2024-09-04 18:49:43.194754",
  "modified_by": "Administrator",
  "module": "Loan and Investment App",
  "name": "Investment Settings",

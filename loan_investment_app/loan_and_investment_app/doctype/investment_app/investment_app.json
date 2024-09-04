@@ -12,11 +12,20 @@
   "posting_date",
   "transaction_type",
   "mode_of_payment",
+  "pay_to",
   "party_type",
   "party",
+  "column_break_bpehu",
   "party_name",
   "amount",
-  "remarks"
+  "remarks",
+  "interest_rate",
+  "start_date",
+  "end_date",
+  "percent_amount",
+  "schedule",
+  "investment_schedule",
+  "withdral_amount"
  ],
  "fields": [
   {
@@ -37,9 +46,10 @@
    "fieldname": "transaction_type",
    "fieldtype": "Select",
    "label": "Transaction Type",
-   "options": "\nDeposit\nInvest\nTransfer\nWithdraw"
+   "options": "\nDeposit\nInvest\nTransfer\nWithdraw\nRe-invest\nRequest Payment"
   },
   {
+   "default": "Cash",
    "fieldname": "mode_of_payment",
    "fieldtype": "Link",
    "label": "Mode of Payment",
@@ -91,12 +101,58 @@
    "fieldtype": "Link",
    "label": "Party",
    "options": "Member"
+  },
+  {
+   "fieldname": "interest_rate",
+   "fieldtype": "Percent",
+   "label": "Interest Rate"
+  },
+  {
+   "fieldname": "start_date",
+   "fieldtype": "Date",
+   "label": "Start Date"
+  },
+  {
+   "fieldname": "end_date",
+   "fieldtype": "Date",
+   "label": "End Date"
+  },
+  {
+   "fieldname": "percent_amount",
+   "fieldtype": "Currency",
+   "label": "Percent Amount"
+  },
+  {
+   "fieldname": "column_break_bpehu",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "schedule",
+   "fieldtype": "Tab Break",
+   "label": "Investment Schedule"
+  },
+  {
+   "fieldname": "investment_schedule",
+   "fieldtype": "Table",
+   "label": "Schedule Amount",
+   "options": "Investment Schedule"
+  },
+  {
+   "fieldname": "pay_to",
+   "fieldtype": "Link",
+   "label": "Pay To",
+   "options": "Account"
+  },
+  {
+   "fieldname": "withdral_amount",
+   "fieldtype": "Currency",
+   "label": "withdral Amount"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2024-09-01 21:24:50.733666",
+ "modified": "2024-09-04 22:28:35.635122",
  "modified_by": "Administrator",
  "module": "Loan and Investment App",
  "name": "Investment App",

@@ -5,7 +5,7 @@ frappe.ready(function() {
         frappe.call({
             method: 'loan_investment_app.custom_api.user.get_logged_in_user_info',
             callback: function (response) {
-                console.log(response);
+                // console.log(response);
                 if (response.message) {
                     // Set the fetched user information to the appropriate fields
                     frappe.web_form.set_value('posting_date', response.message.current_date);
@@ -36,11 +36,32 @@ frappe.ready(function() {
         frappe.web_form.on('start_date', function(field, value) {
             calculate_percent_amount();
         });
+    
+        // Trigger when the end_date field changes
         frappe.web_form.on('end_date', function(field, value) {
-            calculate_percent_amount();
-            populate_investment_schedule(); // Populate schedule when end_date is selected
-        });
+            calculate_percent_amount();  // Call to calculate the percentage amount again when the end date changes
 
+        // Fetch the start_date value to pass it along with the end_date
+        let start_date = frappe.web_form.get_value('start_date');
+        let tranct_type = frappe.web_form.get_value('transaction_type');
+
+        if (!start_date) {
+            console.error("Start date not provided. Cannot proceed.");
+            return;
+        }
+
+       
+        // Call populate_schedule_table with both the start_date and end_date
+        if (tranct_type == 'Withdraw'){
+            populate_schedule_table('Withdraw', start_date, value);  // Pass the transaction type 'Withdraw', start_date, and end_date
+
+        }
+
+        if (tranct_type == 'Invest' || tranct_type == 'Re-invest'){
+            populate_investment_schedule();  // Call the function to populate the investment schedule if needed
+        }
+       
+        });
         // Initial handling of transaction_type visibility
         handle_transaction_type(frappe.web_form.get_value('transaction_type'));
 
@@ -136,17 +157,28 @@ function populate_investment_schedule() {
     }
 }
 
-function populate_schedule_table(transaction_type) {
+function populate_schedule_table(transaction_type, start_date, end_date) {
     if (transaction_type === 'Withdraw') {
-        // Fetch the investment schedule for the withdrawal
+        // Fetch the investment schedule for the withdrawal with the provided date range
         frappe.call({
             method: 'loan_investment_app.custom_api.user.fetch_investment_schedule',
+            args: {
+                start_date: start_date,  // Pass start date as argument
+                end_date: end_date       // Pass end date as argument
+            },
             callback: function (response) {
-                console.log(response);
+                // console.log(response);
                 if (response.message) {
                     // Clear existing rows in the investment_schedule child table
                     let child_table = frappe.web_form.get_field('investment_schedule');
                     console.log(response);
+
+                    // Set the calculated value in the percent_amount field 
+                    frappe.web_form.set_value('withdraw_percen_amount', response.message.total_percent_amount);
+                    let amount = parseFloat(frappe.web_form.get_value('amount'));
+                    let total_amount = amount + response.message.total_percent_amount
+                    frappe.web_form.set_value('withdraw_grand_totals', total_amount);
+                    
 
                     // Check if the child table exists before proceeding
                     if (!child_table) {
@@ -217,11 +249,11 @@ function populate_schedule_table(transaction_type) {
             frappe.web_form.set_df_property('balance_walet', 'hidden', 0);
         }
         else if (transaction_type === 'Withdraw') {
-            // Make mode_of_payment visible for 'Deposit' and 'Withdraw'
+            // Make mode_of_payment visible for 'Deposit' and 'Withdraw' investor_bank_name
             frappe.web_form.set_df_property('interest_rate', 'hidden', 1);
-            frappe.web_form.set_df_property('start_date', 'hidden', 1);
-            frappe.web_form.set_df_property('end_date', 'hidden', 1);
-            frappe.web_form.set_df_property('percent_amount', 'hidden', 1);
+            frappe.web_form.set_df_property('start_date', 'hidden', 0);
+            frappe.web_form.set_df_property('end_date', 'hidden', 0);
+            frappe.web_form.set_df_property('withdraw_percen_amount', 'hidden', 0);
             frappe.web_form.set_df_property('mode_of_payment', 'hidden', 1);
             frappe.web_form.set_df_property('investment_schedule', 'hidden', 0);
             frappe.web_form.set_df_property('withdral_amount', 'hidden', 1);

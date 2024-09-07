@@ -27,11 +27,15 @@
   "investment_schedule",
   "withdral_amount",
   "balance_walet",
+  "withdraw_percen_amount",
+  "withdraw_grand_totals",
   "account_details_tab",
   "investor_bank_name",
   "investor_account_number",
   "column_break_vr5fd",
-  "investor_account_name"
+  "investor_account_name",
+  "start_period",
+  "end_period"
  ],
  "fields": [
   {
@@ -186,12 +190,33 @@
    "fieldname": "investor_account_name",
    "fieldtype": "Data",
    "label": "Investor Account Name"
+  },
+  {
+   "fieldname": "withdraw_percen_amount",
+   "fieldtype": "Currency",
+   "label": "withdraw Percen Amount"
+  },
+  {
+   "fieldname": "withdraw_grand_totals",
+   "fieldtype": "Currency",
+   "hidden": 1,
+   "label": "Withdraw Grand Totals"
+  },
+  {
+   "fieldname": "start_period",
+   "fieldtype": "Date",
+   "label": "Start Period"
+  },
+  {
+   "fieldname": "end_period",
+   "fieldtype": "Date",
+   "label": "End Period"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2024-09-06 01:09:06.190305",
+ "modified": "2024-09-07 12:03:58.324073",
  "modified_by": "Administrator",
  "module": "Loan and Investment App",
  "name": "Investment App",

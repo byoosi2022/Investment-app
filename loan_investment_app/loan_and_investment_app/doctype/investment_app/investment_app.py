@@ -49,9 +49,9 @@ class InvestmentApp(Document):
                 self.add_journal_entry_row(journal_entry, accounts['portfolio_account'], 0, self.amount, cost_center=accounts['cost_center'])
 
             elif self.transaction_type == "Withdraw":
-                self.add_journal_entry_row(journal_entry, accounts['withdrawal_payable_account'], 0, self.withdral_amount, cost_center=accounts['cost_center'])
+                self.add_journal_entry_row(journal_entry, accounts['withdrawal_payable_account'], 0, self.withdraw_grand_totals, cost_center=accounts['cost_center'])
                 self.add_journal_entry_row(journal_entry, accounts['portfolio_account'], self.amount, 0, cost_center=accounts['cost_center'])
-                self.add_journal_entry_row(journal_entry, accounts['investment_interest'], self.percent_amount, 0, cost_center=accounts['cost_center'])
+                self.add_journal_entry_row(journal_entry, accounts['investment_interest'], self.withdraw_percen_amount, 0, cost_center=accounts['cost_center'])
                 # self.add_journal_entry_row(journal_entry, default_paid_to_account, 0, self.amount, cost_center=accounts['cost_center'])
 
             elif self.transaction_type == "Re-invest":

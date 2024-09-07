@@ -1,6 +1,7 @@
 from frappe import _
 import frappe
 from frappe.utils import today
+from datetime import datetime
 
 @frappe.whitelist()
 def get_logged_in_user_info():
@@ -98,13 +99,15 @@ def get_party_name(party):
         "member_name": member_name
     }
     
+from dateutil.relativedelta import relativedelta
+
 @frappe.whitelist()
-def fetch_investment_schedule():
+def fetch_investment_schedule(start_date=None, end_date=None):
     user = frappe.get_doc("User", frappe.session.user)
     user_info = {
         "email": user.email,
     }
-    
+
     # Fetch user permissions related to the investment account where 'allow' is 'Member'
     investment_account = frappe.db.sql("""
         SELECT for_value
@@ -114,7 +117,8 @@ def fetch_investment_schedule():
 
     # Initialize variables
     member_name = None
-    
+    total_percent_amount = 0  # To sum percent_amount
+
     # Fetch member details if an investment account was found
     if investment_account:
         member_data = frappe.db.sql("""
@@ -127,7 +131,7 @@ def fetch_investment_schedule():
         if member_data:
             member_name = member_data[0].name
 
-            # Fetch only submitted investment schedules for the member based on the parent investment app in ascending order
+            # Fetch only submitted investment schedules for the member based on the parent investment app
             investment_schedule_data = frappe.db.sql("""
                 SELECT *
                 FROM `tabInvestment Schedule`
@@ -136,13 +140,32 @@ def fetch_investment_schedule():
                     FROM `tabInvestment App`
                     WHERE party = %s
                 )
-                AND docstatus = 1  -- Only get submitted schedules
-                ORDER BY date ASC  -- Adjust 'date' to the actual date field you want to sort by
+                AND docstatus = 1
+                ORDER BY date ASC  -- Using 'date' field in child table
             """, (member_name,), as_dict=True)
+
+            # Check if start_date and end_date are provided, and parse them to date objects
+            if start_date and end_date:
+                start_date = datetime.strptime(start_date, "%Y-%m-%d").date()  # Convert to date object
+                end_date = datetime.strptime(end_date, "%Y-%m-%d").date()  # Convert to date object
+
+                # Loop through the investment schedule data and sum up the percent_amount for valid entries
+                for schedule in investment_schedule_data:
+                    schedule_date = schedule['date']  # Date from child table
+
+                    # Ensure schedule_date is a date, not datetime
+                    if isinstance(schedule_date, datetime):
+                        schedule_date = schedule_date.date()
+
+                    # Check if the schedule date falls within the selected date range
+                    if start_date <= schedule_date <= end_date:
+                        # Sum the percent_amount
+                        total_percent_amount += schedule.get('amount', 0)
 
             return {
                 "member_name": member_name,
-                "investment_schedule_data": investment_schedule_data
+                "investment_schedule_data": investment_schedule_data,
+                "total_percent_amount": total_percent_amount  # Return the calculated percent_amount
             }
-    
+
     return None

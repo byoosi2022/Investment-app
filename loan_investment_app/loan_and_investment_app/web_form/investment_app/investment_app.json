@@ -10,7 +10,9 @@
  "amount_based_on_field": 0,
  "anonymous": 0,
  "apply_document_permissions": 0,
+ "breadcrumbs": "",
  "button_label": "Save",
+ "client_script": "",
  "condition_json": "[]",
  "creation": "2024-09-01 19:59:11.258575",
  "currency": "UGX",
@@ -22,7 +24,7 @@
  "list_columns": [],
  "login_required": 0,
  "max_attachment_size": 0,
- "modified": "2024-09-04 18:18:16.397697",
+ "modified": "2024-09-06 02:21:34.365090",
  "modified_by": "Administrator",
  "module": "Loan and Investment App",
  "name": "investment-app",
@@ -32,7 +34,7 @@
  "route": "investment-app",
  "show_attachments": 0,
  "show_list": 0,
- "show_sidebar": 0,
+ "show_sidebar": 1,
  "title": "Investment",
  "web_form_fields": [
   {
@@ -55,7 +57,7 @@
    "label": "Transaction Type",
    "max_length": 0,
    "max_value": 0,
-   "options": "\nDeposit\nInvest\nTransfer\nWithdraw\nRe-invest",
+   "options": "\nDeposit\nInvest\nTransfer\nWithdraw\nRe-invest\nRequest Payment",
    "read_only": 0,
    "reqd": 0,
    "show_in_filter": 0
@@ -75,6 +77,19 @@
   },
   {
    "allow_read_on_all_link_options": 0,
+   "fieldname": "pay_to",
+   "fieldtype": "Link",
+   "hidden": 0,
+   "label": "Company Payment Account",
+   "max_length": 0,
+   "max_value": 0,
+   "options": "Account",
+   "read_only": 0,
+   "reqd": 0,
+   "show_in_filter": 0
+  },
+  {
+   "allow_read_on_all_link_options": 0,
    "fieldname": "remarks",
    "fieldtype": "Small Text",
    "hidden": 1,
@@ -87,10 +102,22 @@
   },
   {
    "allow_read_on_all_link_options": 0,
-   "fieldname": "start_date",
-   "fieldtype": "Date",
+   "fieldname": "percent_amount",
+   "fieldtype": "Currency",
    "hidden": 0,
-   "label": "Start Date",
+   "label": "Percent Amount",
+   "max_length": 0,
+   "max_value": 0,
+   "read_only": 1,
+   "reqd": 0,
+   "show_in_filter": 0
+  },
+  {
+   "allow_read_on_all_link_options": 0,
+   "fieldname": "investor_bank_name",
+   "fieldtype": "Data",
+   "hidden": 0,
+   "label": "Investor Bank Name",
    "max_length": 0,
    "max_value": 0,
    "read_only": 0,
@@ -99,10 +126,22 @@
   },
   {
    "allow_read_on_all_link_options": 0,
-   "fieldname": "percent_amount",
-   "fieldtype": "Currency",
+   "fieldname": "investor_account_number",
+   "fieldtype": "Data",
    "hidden": 0,
-   "label": "Percent Amount",
+   "label": "Investor Account Number",
+   "max_length": 0,
+   "max_value": 0,
+   "read_only": 0,
+   "reqd": 0,
+   "show_in_filter": 0
+  },
+  {
+   "allow_read_on_all_link_options": 0,
+   "fieldname": "start_date",
+   "fieldtype": "Date",
+   "hidden": 0,
+   "label": "Start Date",
    "max_length": 0,
    "max_value": 0,
    "read_only": 0,
@@ -161,6 +200,18 @@
   },
   {
    "allow_read_on_all_link_options": 0,
+   "fieldname": "balance_walet",
+   "fieldtype": "Currency",
+   "hidden": 0,
+   "label": "Balance in Walet",
+   "max_length": 0,
+   "max_value": 0,
+   "read_only": 0,
+   "reqd": 0,
+   "show_in_filter": 0
+  },
+  {
+   "allow_read_on_all_link_options": 0,
    "fieldname": "party",
    "fieldtype": "Link",
    "hidden": 1,
@@ -195,6 +246,57 @@
    "read_only": 0,
    "reqd": 0,
    "show_in_filter": 0
+  },
+  {
+   "allow_read_on_all_link_options": 0,
+   "fieldname": "investor_account_name",
+   "fieldtype": "Data",
+   "hidden": 0,
+   "label": "Investor Account Name",
+   "max_length": 0,
+   "max_value": 0,
+   "read_only": 0,
+   "reqd": 0,
+   "show_in_filter": 0
+  },
+  {
+   "allow_read_on_all_link_options": 0,
+   "fieldname": "",
+   "fieldtype": "Section Break",
+   "hidden": 0,
+   "label": "",
+   "max_length": 0,
+   "max_value": 0,
+   "options": "",
+   "read_only": 0,
+   "reqd": 0,
+   "show_in_filter": 0
+  },
+  {
+   "allow_read_on_all_link_options": 0,
+   "fieldname": "investment_schedule",
+   "fieldtype": "Table",
+   "hidden": 0,
+   "label": "Schedule Amount",
+   "max_length": 0,
+   "max_value": 0,
+   "options": "Investment Schedule",
+   "read_only": 1,
+   "reqd": 0,
+   "show_in_filter": 0
+  },
+  {
+   "allow_read_on_all_link_options": 0,
+   "fieldname": "withdral_amount",
+   "fieldtype": "Currency",
+   "hidden": 0,
+   "label": "Grand Totals",
+   "max_length": 0,
+   "max_value": 0,
+   "read_only": 0,
+   "reqd": 0,
+   "show_in_filter": 0
   }
- ]
+ ],
+ "website_sidebar": "Investment Bar"
 }

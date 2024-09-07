@@ -25,7 +25,13 @@
   "percent_amount",
   "schedule",
   "investment_schedule",
-  "withdral_amount"
+  "withdral_amount",
+  "balance_walet",
+  "account_details_tab",
+  "investor_bank_name",
+  "investor_account_number",
+  "column_break_vr5fd",
+  "investor_account_name"
  ],
  "fields": [
   {
@@ -69,7 +75,8 @@
    "in_list_view": 1,
    "in_preview": 1,
    "in_standard_filter": 1,
-   "label": "Party Name"
+   "label": "Party Name",
+   "read_only": 1
   },
   {
    "fieldname": "amount",
@@ -120,7 +127,8 @@
   {
    "fieldname": "percent_amount",
    "fieldtype": "Currency",
-   "label": "Percent Amount"
+   "label": "Percent Amount",
+   "read_only": 1
   },
   {
    "fieldname": "column_break_bpehu",
@@ -135,24 +143,55 @@
    "fieldname": "investment_schedule",
    "fieldtype": "Table",
    "label": "Schedule Amount",
-   "options": "Investment Schedule"
+   "options": "Investment Schedule",
+   "read_only": 1
   },
   {
    "fieldname": "pay_to",
    "fieldtype": "Link",
-   "label": "Pay To",
+   "label": "Company Payment Account",
    "options": "Account"
   },
   {
+   "allow_on_submit": 1,
    "fieldname": "withdral_amount",
    "fieldtype": "Currency",
-   "label": "withdral Amount"
+   "label": "Grand Totals"
+  },
+  {
+   "fieldname": "balance_walet",
+   "fieldtype": "Currency",
+   "label": "Balance in Walet"
+  },
+  {
+   "fieldname": "account_details_tab",
+   "fieldtype": "Tab Break",
+   "label": "Account Details"
+  },
+  {
+   "fieldname": "investor_bank_name",
+   "fieldtype": "Data",
+   "label": "Investor Bank Name"
+  },
+  {
+   "fieldname": "investor_account_number",
+   "fieldtype": "Data",
+   "label": "Investor Account Number"
+  },
+  {
+   "fieldname": "column_break_vr5fd",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "investor_account_name",
+   "fieldtype": "Data",
+   "label": "Investor Account Name"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2024-09-04 22:28:35.635122",
+ "modified": "2024-09-06 01:09:06.190305",
  "modified_by": "Administrator",
  "module": "Loan and Investment App",
  "name": "Investment App",

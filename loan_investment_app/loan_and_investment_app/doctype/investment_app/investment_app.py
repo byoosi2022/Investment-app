@@ -6,6 +6,15 @@ from frappe import _
 from frappe.model.document import Document
 
 class InvestmentApp(Document):
+    def validate(self):
+        # Check if the transaction type is "Request Payment" balance_walet
+        if self.transaction_type == "Request Payment" or self.transaction_type == "Withdraw":
+            # Validate that the amount does not exceed the balance_wallet
+            if self.investment_schedule:
+                self.investment_schedule = ""
+            if self.amount > self.balance_walet:
+                frappe.throw(_("The amount cannot exceed the balance wallet amount."))
+                
     def on_submit(self):
         self.create_journal_entry()
         self.create_schedule_journal_entries()
@@ -46,8 +55,8 @@ class InvestmentApp(Document):
                 # self.add_journal_entry_row(journal_entry, default_paid_to_account, 0, self.amount, cost_center=accounts['cost_center'])
 
             elif self.transaction_type == "Re-invest":
-                self.add_journal_entry_row(journal_entry, accounts['withdrawal_payable_account'], self.withdral_amount, 0, cost_center=accounts['cost_center'])
-                self.add_journal_entry_row(journal_entry, accounts['portfolio_account'], 0, self.withdral_amount, cost_center=accounts['cost_center'])
+                self.add_journal_entry_row(journal_entry, accounts['withdrawal_payable_account'], self.amount, 0, cost_center=accounts['cost_center'])
+                self.add_journal_entry_row(journal_entry, accounts['portfolio_account'], 0, self.amount, cost_center=accounts['cost_center'])
 
             elif self.transaction_type == "Request Payment":
                 self.add_journal_entry_row(journal_entry, accounts['withdrawal_payable_account'], self.withdral_amount, 0, cost_center=accounts['cost_center'])
@@ -70,7 +79,7 @@ class InvestmentApp(Document):
         try:
             company, default_paid_to_account = self.get_default_company_and_account()
 
-            if self.transaction_type == "Invest":
+            if self.transaction_type == "Invest" or self.transaction_type == "Re-invest":
                 accounts = self.get_investment_accounts()
 
                 for schedule_item in self.investment_schedule:

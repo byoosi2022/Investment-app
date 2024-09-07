@@ -16,7 +16,12 @@ frappe.ui.form.on('Investment App', {
     transaction_type: function(frm) {
         handle_transaction_type(frm);
     },
-    interest_rate: function(frm) {
+
+    party: function(frm) {
+        update_party_name(frm);
+    },
+
+        interest_rate: function(frm) {
         calculate_and_populate_schedule(frm);
     },
     amount: function(frm) {
@@ -132,4 +137,22 @@ function handle_transaction_type(frm) {
         frm.set_df_property('percent_amount', 'hidden', 0);
         frm.set_df_property('mode_of_payment', 'hidden', 1);
     }
+}
+
+function update_party_name(frm) {
+    frappe.call({
+        method: 'loan_investment_app.custom_api.user.get_party_name',
+        args:{
+            party: frm.doc.party
+        },
+        callback: function (response) {
+            console.log(response);
+            if (response.message) {
+                // Set the fetched user information to the appropriate fields
+                frm.set_value('party_name', response.message.member_name);
+           
+            }
+        }
+    });
+
 }

@@ -24,7 +24,7 @@
  "list_columns": [],
  "login_required": 0,
  "max_attachment_size": 0,
- "modified": "2024-09-07 11:14:23.965838",
+ "modified": "2024-09-07 21:56:35.317966",
  "modified_by": "Administrator",
  "module": "Loan and Investment App",
  "name": "investment-app",
@@ -199,6 +199,19 @@
   },
   {
    "allow_read_on_all_link_options": 0,
+   "fieldname": "interest_rate",
+   "fieldtype": "Data",
+   "hidden": 0,
+   "label": "Interest Rate",
+   "max_length": 0,
+   "max_value": 0,
+   "read_only": 0,
+   "reqd": 0,
+   "show_in_filter": 0
+  },
+  {
+   "allow_read_on_all_link_options": 0,
+   "depends_on": "",
    "fieldname": "end_date",
    "fieldtype": "Date",
    "hidden": 0,
@@ -255,18 +268,6 @@
    "max_length": 0,
    "max_value": 0,
    "options": "Member",
-   "read_only": 0,
-   "reqd": 0,
-   "show_in_filter": 0
-  },
-  {
-   "allow_read_on_all_link_options": 0,
-   "fieldname": "interest_rate",
-   "fieldtype": "Data",
-   "hidden": 0,
-   "label": "Interest Rate",
-   "max_length": 0,
-   "max_value": 0,
    "read_only": 0,
    "reqd": 0,
    "show_in_filter": 0

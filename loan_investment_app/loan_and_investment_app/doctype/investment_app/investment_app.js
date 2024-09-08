@@ -94,7 +94,7 @@ function calculate_and_populate_schedule(frm) {
 
             // Add the new row to the schedule
             frm.add_child('investment_schedule', {
-                date: frappe.datetime.obj_to_str(scheduled_date),
+                start_date: frappe.datetime.obj_to_str(scheduled_date),
                 principal_amount: i === 0 ? principal_amount : 0, // Set principal_amount only for the first month
                 available_amount: available_amount, // Incremented value for each month
                 amount: monthly_amount // Constant monthly amount

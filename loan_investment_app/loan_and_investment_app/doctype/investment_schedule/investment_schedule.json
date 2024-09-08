@@ -7,18 +7,13 @@
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
-  "date",
+  "start_date",
+  "end_date",
   "principal_amount",
   "amount",
   "available_amount"
  ],
  "fields": [
-  {
-   "fieldname": "date",
-   "fieldtype": "Date",
-   "in_list_view": 1,
-   "label": "Date"
-  },
   {
    "fieldname": "amount",
    "fieldtype": "Currency",
@@ -36,12 +31,24 @@
    "fieldtype": "Currency",
    "in_list_view": 1,
    "label": "Available Amount"
+  },
+  {
+   "fieldname": "start_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Start Date"
+  },
+  {
+   "fieldname": "end_date",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "End Date"
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2024-09-06 02:20:28.725718",
+ "modified": "2024-09-08 01:04:41.705948",
  "modified_by": "Administrator",
  "module": "Loan and Investment App",
  "name": "Investment Schedule",

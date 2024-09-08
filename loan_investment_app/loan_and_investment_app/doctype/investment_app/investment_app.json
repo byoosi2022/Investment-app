@@ -33,9 +33,7 @@
   "investor_bank_name",
   "investor_account_number",
   "column_break_vr5fd",
-  "investor_account_name",
-  "start_period",
-  "end_period"
+  "investor_account_name"
  ],
  "fields": [
   {
@@ -201,22 +199,12 @@
    "fieldtype": "Currency",
    "hidden": 1,
    "label": "Withdraw Grand Totals"
-  },
-  {
-   "fieldname": "start_period",
-   "fieldtype": "Date",
-   "label": "Start Period"
-  },
-  {
-   "fieldname": "end_period",
-   "fieldtype": "Date",
-   "label": "End Period"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2024-09-07 12:03:58.324073",
+ "modified": "2024-09-07 12:22:34.780924",
  "modified_by": "Administrator",
  "module": "Loan and Investment App",
  "name": "Investment App",

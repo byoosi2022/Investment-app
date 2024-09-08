@@ -1,1 +1,13 @@
-[]
+[
+ {
+  "docstatus": 0,
+  "doctype": "Client Script",
+  "dt": "Investment App",
+  "enabled": 1,
+  "modified": "2024-09-08 13:02:02.898071",
+  "module": "Loan and Investment App",
+  "name": "Update Member",
+  "script": "frappe.ui.form.on('Investment App', {\r\n    validate: function(frm) {\r\n        // Fetch Member document only if Transaction Type is 'Request Payment'\r\n        if (frm.doc.party && frm.doc.transaction_type === 'Request Payment') {\r\n            frappe.call({\r\n                method: 'frappe.client.get',\r\n                args: {\r\n                    doctype: 'Member',\r\n                    name: frm.doc.party  // Assuming party is the name of Member\r\n                },\r\n                callback: function(response) {\r\n                    var member = response.message;\r\n                    if (member) {\r\n                        // Check if the fields are not already set\r\n                        if (!member.custom_investor_bank_name || \r\n                            !member.custom_investor_account_number || \r\n                            !member.custom_investor_account_name) {\r\n                            \r\n                            // Update the Member document with the new values\r\n                            frappe.call({\r\n                                method: 'frappe.client.set_value',\r\n                                args: {\r\n                                    doctype: 'Member',\r\n                                    name: member.name,\r\n                                    fieldname: {\r\n                                        'custom_investor_bank_name': frm.doc.investor_bank_name,\r\n                                        'custom_investor_account_number': frm.doc.investor_account_number,\r\n                                        'custom_investor_account_name': frm.doc.investor_account_name\r\n                                    }\r\n                                },\r\n                                callback: function(r) {\r\n                                    if (!r.exc) {\r\n                                        frappe.msgprint(__('Member details updated successfully!'));\r\n                                    }\r\n                                }\r\n                            });\r\n                        } else {\r\n                            // Prevent saving the Investment App\r\n                            // frappe.msgprint(__('Member details are already updated. The Investment App cannot be saved.'));\r\n                            // frm.cancel();\r\n                        }\r\n                    }\r\n                }\r\n            });\r\n            // Prevent saving the Investment App until the callback is complete\r\n            frappe.validated = false; // Prevent form submission\r\n        }\r\n    }\r\n});\r\n",
+  "view": "Form"
+ }
+]

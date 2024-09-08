@@ -1,0 +1,44 @@
+[
+ {
+  "custom_module": "Loan and Investment App",
+  "docstatus": 0,
+  "doctype": "Website Sidebar",
+  "modified": "2024-09-08 17:58:51.417299",
+  "name": "Investment Bar",
+  "sidebar_items": [
+   {
+    "group": null,
+    "parent": "Investment Bar",
+    "parentfield": "sidebar_items",
+    "parenttype": "Website Sidebar",
+    "route": "/investment-form/new",
+    "title": "Register as Investor"
+   },
+   {
+    "group": null,
+    "parent": "Investment Bar",
+    "parentfield": "sidebar_items",
+    "parenttype": "Website Sidebar",
+    "route": "/investment-app",
+    "title": "Transactions"
+   },
+   {
+    "group": null,
+    "parent": "Investment Bar",
+    "parentfield": "sidebar_items",
+    "parenttype": "Website Sidebar",
+    "route": "/custom_pages/sales_invoices_report",
+    "title": "Transaction Report"
+   },
+   {
+    "group": null,
+    "parent": "Investment Bar",
+    "parentfield": "sidebar_items",
+    "parenttype": "Website Sidebar",
+    "route": null,
+    "title": "Investment Schedules"
+   }
+  ],
+  "title": "Investment Bar"
+ }
+]

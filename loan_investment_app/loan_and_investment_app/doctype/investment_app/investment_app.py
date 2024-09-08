@@ -15,7 +15,7 @@ class InvestmentApp(Document):
     def validate(self):
         # Validate that the amount does not exceed the balance_wallet for "Request Payment" transactions
         if self.transaction_type == "Request Payment" or self.transaction_type == "Withdraw":
-            if self.amount > self.balance_wallet:
+            if self.amount > self.balance_walet:
                 frappe.throw(_("The amount cannot exceed the balance wallet amount."))
 
         # if self.transaction_type == "Withdraw" and self.investment_schedule:

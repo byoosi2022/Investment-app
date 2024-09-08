@@ -22,7 +22,7 @@
  "list_columns": [],
  "login_required": 0,
  "max_attachment_size": 0,
- "modified": "2024-09-08 18:19:46.984597",
+ "modified": "2024-09-08 18:55:34.000849",
  "modified_by": "Administrator",
  "module": "Loan and Investment App",
  "name": "investment-form",
@@ -32,7 +32,7 @@
  "route": "investment-form",
  "show_attachments": 0,
  "show_list": 0,
- "show_sidebar": 0,
+ "show_sidebar": 1,
  "title": "Investment Form",
  "web_form_fields": [
   {
@@ -121,5 +121,6 @@
    "reqd": 0,
    "show_in_filter": 0
   }
- ]
+ ],
+ "website_sidebar": "Investment Bar"
 }

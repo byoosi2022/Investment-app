@@ -5,9 +5,11 @@ from datetime import datetime
 
 @frappe.whitelist()
 def get_logged_in_user_info():
+    # Get the current logged-in user and current date
     user = frappe.get_doc("User", frappe.session.user)
-    current_date = today()
+    current_date = frappe.utils.today()
 
+    # Basic user info
     user_info = {
         "email": user.email,
         "current_date": current_date
@@ -20,25 +22,33 @@ def get_logged_in_user_info():
         WHERE user = %s AND allow = 'Member'
     """, (user_info["email"],), as_dict=True)
 
-    # Initialize variables
+    # Initialize variables for member and account details
     member_name = None
     custom_investor_account_number = None
     custom_investor_account_name = None
     custom_investor_bank_name = None
     total_credit = 0
     total_debit = 0
-    balance = 0  # Initialize balance
+    balance_portfolia = 0
+    balance_withdrawal_payable = 0
+    balance_deposit = 0
+    balance_interest = 0
+    email_id = None
+    pan_number = None
+    membership_type = None
+    custom_member_id = None
 
-    # Fetch member details if an investment account was found
+    # If an investment account exists, fetch member details
     if investment_account:
         member_data = frappe.db.sql("""
-            SELECT  name,member_name, email_id,custom_resident,membership_type,custom_investor_account_name, custom_investor_account_number, custom_investor_bank_name
+            SELECT name, member_name, email_id, custom_resident, membership_type, 
+                   custom_investor_account_name, custom_investor_account_number, custom_investor_bank_name
             FROM `tabMember`
             WHERE name = %s
         """, (investment_account[0].for_value,), as_dict=True)
 
-        # Check if member data is found and set member details 
         if member_data:
+            # Assign member details
             member_name = member_data[0].member_name
             custom_investor_account_number = member_data[0].custom_investor_account_number
             custom_investor_account_name = member_data[0].custom_investor_account_name
@@ -48,24 +58,51 @@ def get_logged_in_user_info():
             membership_type = member_data[0].membership_type
             custom_member_id = member_data[0].name
 
-        # Fetch total credits and debits for the member in the account
-        balance_data = frappe.db.sql("""
-            SELECT SUM(credit) AS total_credit, SUM(debit) AS total_debit
-            FROM `tabGL Entry`
-            WHERE account = '22514 - Investors Withdrawal Payable Account - MACL'
-            AND party_type = 'Member'
-            AND party = %s
-        """, (investment_account[0].for_value,), as_dict=True)
+        # Fetch the portfolio and withdrawal payable account settings
+        accounts = frappe.db.sql("""
+            SELECT portfolio_account, investment_interest, capital_account, investor_withdrawal_payable_account
+            FROM `tabInvestment Settings`
+        """, as_dict=True)
 
-        # Set totals if data is found
-        if balance_data:
-            total_credit = balance_data[0].total_credit or 0
-            total_debit = balance_data[0].total_debit or 0
+        if accounts:
+            portfolia = accounts[0].portfolio_account
+            withdrawal_payable = accounts[0].investor_withdrawal_payable_account
+            deposit = accounts[0].capital_account
+            interest = accounts[0].investment_interest
 
-            # Calculate balance
-            balance = total_credit - total_debit
+            # Fetch total credits and debits for the member in both the portfolio and withdrawal accounts
+            balance_data = frappe.db.sql("""
+                SELECT 
+                    SUM(CASE WHEN account = %s THEN credit ELSE 0 END) AS total_credit_portfolia,
+                    SUM(CASE WHEN account = %s THEN debit ELSE 0 END) AS total_debit_portfolia,
+                    SUM(CASE WHEN account = %s THEN credit ELSE 0 END) AS total_credit_withdrawal,
+                    SUM(CASE WHEN account = %s THEN debit ELSE 0 END) AS total_debit_withdrawal,
+                    SUM(CASE WHEN account = %s THEN credit ELSE 0 END) AS total_credit_deposit,
+                    SUM(CASE WHEN account = %s THEN debit ELSE 0 END) AS total_debit_deposit,
+                    SUM(CASE WHEN account = %s THEN credit ELSE 0 END) AS total_credit_interest,
+                    SUM(CASE WHEN account = %s THEN debit ELSE 0 END) AS total_debit_interest
+                FROM `tabGL Entry`
+                WHERE party_type = 'Member' AND party = %s
+            """, (portfolia, portfolia, withdrawal_payable, withdrawal_payable,deposit,deposit,interest, interest, investment_account[0].for_value), as_dict=True)
 
-    # Prepare user information with the total credits, debits, and balance
+            if balance_data:
+                total_credit_portfolia = balance_data[0].total_credit_portfolia or 0
+                total_debit_portfolia = balance_data[0].total_debit_portfolia or 0
+                total_credit_withdrawal = balance_data[0].total_credit_withdrawal or 0
+                total_debit_withdrawal = balance_data[0].total_debit_withdrawal or 0
+                total_credit_deposit = balance_data[0].total_credit_deposit or 0
+                total_debit_deposit = balance_data[0].total_debit_deposit or 0
+                total_credit_interest = balance_data[0].total_credit_interest or 0
+                total_debit_interest = balance_data[0].total_debit_interest or 0
+
+                # Calculate balances
+                balance_portfolia = total_credit_portfolia - total_debit_portfolia
+                balance_withdrawal_payable = total_credit_withdrawal - total_debit_withdrawal
+                balance_deposit = total_credit_deposit - total_debit_deposit
+                balance_interest = total_credit_interest - total_debit_interest
+                amount_in_wallet = balance_interest + balance_portfolia
+
+    # Prepare the response with all user and account information
     user_info2 = {
         "member": investment_account[0].for_value if investment_account else None,
         "current_date": current_date,
@@ -74,16 +111,19 @@ def get_logged_in_user_info():
         "custom_investor_account_name": custom_investor_account_name,
         "custom_investor_bank_name": custom_investor_bank_name,
         "email_id": email_id,
-        "custom_member_id":custom_member_id,
+        "custom_member_id": custom_member_id,
         "custom_resident": pan_number,
-        "membership_type":membership_type,
-        "total_credit": total_credit,  # Total credits
-        "total_debit": total_debit,     # Total debits
-        "balance": balance                # Balance (total_credit - total_debit)
+        "membership_type": membership_type,
+        "balance_portfolia": balance_portfolia,
+        "balance_withdrawal_payable": balance_withdrawal_payable,
+        "balance_deposit": balance_deposit,
+        "balance_interest": balance_interest,
+        "balance_amount_in_wallet": amount_in_wallet,
+ 
+            
     }
 
     return user_info2
-
 
 @frappe.whitelist()
 def get_party_name(party):
@@ -152,7 +192,7 @@ def fetch_investment_schedule(start_date=None, end_date=None):
                 JOIN `tabInvestment App` inv_app ON inv_schedule.parent = inv_app.name
                 WHERE inv_app.party = %s
                 AND inv_app.docstatus = 1
-                AND inv_app.investment_status = 'Investment Approved'  -- Corrected filter for parent status
+                AND inv_app.investment_status = 'Approved'  -- Corrected filter for parent status
                 ORDER BY inv_schedule.start_date ASC  -- Using 'start_date' field in child table
             """, (member_name,), as_dict=True)
 

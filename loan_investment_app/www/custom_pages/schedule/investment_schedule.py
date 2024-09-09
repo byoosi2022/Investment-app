@@ -52,7 +52,9 @@ def get_context(context, posting_date=None):
         fields=['name', 'party_name', 'party', 'posting_date', 'transaction_type', 'amount'],
         filters={
             'party': specific_party,
-            'transaction_type': ['in', ['Re-invest', 'Invest']]
+            'transaction_type': ['in', ['Re-invest', 'Invest']],
+            'docstatus': ['!=', 2],  # Exclude canceled records
+            'investment_status':'Approved'
         },
         limit_page_length=50
     )

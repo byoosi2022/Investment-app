@@ -43,6 +43,8 @@ def get_logged_in_user_info():
 
 from datetime import datetime
 
+import frappe
+
 def get_context(context):
     # Get the logged-in user's information
     user_info = get_logged_in_user_info()
@@ -51,20 +53,21 @@ def get_context(context):
     # Fetch report data from the 'Investment App' doctype for the specific party
     report_data = frappe.get_list(
         'Investment App',  # Replace with your doctype
-        fields=['party_name', 'party', 'investment_status','posting_date', 'start_date', 'end_date', 'transaction_type', 'amount'],
+        fields=['party_name', 'party', 'investment_status', 'posting_date', 'start_date', 'end_date', 'transaction_type', 'amount'],
         filters={
             'party': specific_party,  # Filter by specific party
+            'docstatus': ['!=', 2]  # Exclude canceled records
         },
         limit_page_length=100  # Limit the number of records to retrieve
     )
+
     total_principal = 0
     for tranct in report_data:
         total_principal += tranct.amount
-        
-        
 
-    # # Add report data and title to the context
+    # Add report data and title to the context
     context.report_data = report_data
     context.title = "Investment Report"
     context.total_principal = total_principal
+
 

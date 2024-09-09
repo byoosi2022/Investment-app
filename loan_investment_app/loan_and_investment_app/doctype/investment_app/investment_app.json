@@ -19,6 +19,8 @@
   "column_break_bpehu",
   "party_name",
   "amount",
+  "amount_withrowned",
+  "interets_withrowned",
   "remarks",
   "interest_rate",
   "start_date",
@@ -30,6 +32,8 @@
   "balance_walet",
   "withdraw_percen_amount",
   "withdraw_grand_totals",
+  "portifolia_account",
+  "available_amount_in_wallet",
   "account_details_tab",
   "investor_bank_name",
   "investor_account_number",
@@ -55,7 +59,7 @@
    "fieldname": "transaction_type",
    "fieldtype": "Select",
    "label": "Transaction Type",
-   "options": "\nDeposit\nInvest\nTransfer\nWithdraw\nRe-invest\nRequest Payment"
+   "options": "\nDeposit\nInvest\nTransfer\nWithdraw\nRe-invest\nRequest for Payments"
   },
   {
    "default": "Cash",
@@ -206,13 +210,43 @@
    "fieldname": "investment_status",
    "fieldtype": "Select",
    "label": "Investment Status",
-   "options": "\nInvestment Received\nInvestment Approved"
+   "options": "\nReceived\nApproved"
+  },
+  {
+   "fieldname": "portifolia_account",
+   "fieldtype": "Currency",
+   "hidden": 1,
+   "label": "Portifolia Account"
+  },
+  {
+   "fieldname": "available_amount_in_wallet",
+   "fieldtype": "Currency",
+   "hidden": 1,
+   "label": "Available Amount in Wallet"
+  },
+  {
+   "fieldname": "amount_withrowned",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "in_preview": 1,
+   "in_standard_filter": 1,
+   "label": "Amount withrowned",
+   "read_only": 1
+  },
+  {
+   "fieldname": "interets_withrowned",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "in_preview": 1,
+   "in_standard_filter": 1,
+   "label": "Interets withrowned",
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2024-09-09 18:26:46.612616",
+ "modified": "2024-09-09 23:52:19.888638",
  "modified_by": "Administrator",
  "module": "Loan and Investment App",
  "name": "Investment App",

@@ -5,9 +5,9 @@ frappe.ready(function() {
         frappe.call({
             method: 'loan_investment_app.custom_api.user.get_logged_in_user_info',
             callback: function (response) {
-                // console.log(response);
+                console.log(response);
                 if (response.message) {
-                    // Set the fetched user information to the appropriate fields
+                    // Set the fetched user information to the appropriate fields  
                     frappe.web_form.set_value('posting_date', response.message.current_date);
                     frappe.web_form.set_value('party_type', "Member");
                     frappe.web_form.set_value('party_id', response.message.member);
@@ -15,7 +15,12 @@ frappe.ready(function() {
                     frappe.web_form.set_value('investor_bank_name', response.message.custom_investor_bank_name);
                     frappe.web_form.set_value('investor_account_number', response.message.custom_investor_account_number);
                     frappe.web_form.set_value('investor_account_name', response.message.custom_investor_account_name);
-                    frappe.web_form.set_value('balance_walet', response.message.balance);
+                    frappe.web_form.set_value('balance_walet', response.message.balance_withdrawal_payable);
+                    frappe.web_form.set_value('amount', response.message.balance_amount_in_wallet);
+                    frappe.web_form.set_value('amount_withrowned', response.message.balance_portfolia);
+                    frappe.web_form.set_value('interets_withrowned', response.message.balance_interest);
+                    frappe.web_form.set_value('portifolia_account', response.message.balance_deposit );
+                    frappe.web_form.set_value('available_amount_in_wallet', response.message.balance_amount_in_wallet );
                 }
             }
         });
@@ -186,11 +191,11 @@ function populate_schedule_table(transaction_type, start_date, end_date) {
                 end_date: end_date       // Pass end date as argument
             },
             callback: function (response) {
-                console.log(response);
+                // console.log(response);
                 if (response.message) {
                     // Clear existing rows in the investment_schedule child table
                     let child_table = frappe.web_form.get_field('investment_schedule');
-                    console.log(response);
+                    // console.log(response);
 
                     // Set the calculated value in the percent_amount field 
                     frappe.web_form.set_value('withdraw_percen_amount', response.message.total_percent_amount);
@@ -241,7 +246,7 @@ function populate_schedule_table(transaction_type, start_date, end_date) {
     function handle_transaction_type(transaction_type) {
         const fields = ['interest_rate','investor_account_number', 'start_date','withdraw_percen_amount','withdraw_grand_totals',
             'investment_schedule','investor_account_name','pay_to','withdral_amount',
-             'end_date','balance_walet', 'investor_bank_name','percent_amount', 'mode_of_payment'];
+             'end_date','balance_walet', 'amount_withrowned','interets_withrowned','investor_bank_name','percent_amount', 'mode_of_payment'];
         
         if (transaction_type === 'Invest' || transaction_type === 'Re-invest') {
             // Make fields visible for 'Invest' and 'Re-invest'
@@ -281,10 +286,12 @@ function populate_schedule_table(transaction_type, start_date, end_date) {
             frappe.web_form.set_df_property('investor_account_number', 'hidden', 1);
             frappe.web_form.set_df_property('investor_account_name', 'hidden', 1);
             frappe.web_form.set_df_property('balance_walet', 'hidden', 0);
+            frappe.web_form.set_df_property('amount_withrowned', 'hidden', 1);
+            frappe.web_form.set_df_property('interets_withrowned', 'hidden', 1);
         }
         
         
-        else if (transaction_type === 'Request Payment') { 
+        else if (transaction_type === 'Request for Payments') { 
             // Make mode_of_payment visible for 'Deposit' and 'Withdraw' pay_to
             frappe.web_form.set_df_property('interest_rate', 'hidden', 1);
             frappe.web_form.set_df_property('start_date', 'hidden', 1);

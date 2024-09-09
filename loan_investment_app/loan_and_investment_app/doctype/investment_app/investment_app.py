@@ -1,28 +1,33 @@
-# Copyright (c) 2024, Paul and contributors
-# For license information, please see license.txt
-
 import frappe
 from frappe import _
 from frappe.model.document import Document
-from datetime import datetime
 from frappe.utils import today, getdate
 
 class InvestmentApp(Document):
-    
-    def on_update(self):
-        if not self.investment_status:
-            self.investment_status = "Investment Received"
 
     def validate(self):
-        # Validate that the amount does not exceed the balance_wallet for "Request Payment" or "Withdraw" transactions
-        if self.transaction_type in ["Request Payment", "Withdraw"]:
-            if self.amount > self.balance_wallet:  # Corrected 'balance_walet' to 'balance_wallet'
-                frappe.throw(_("The amount cannot exceed the balance wallet amount."))
+        # Set the default investment status if not already set
+        if not self.investment_status:
+            self.investment_status = "Received"
+
+        # Validate transaction amounts based on the type of transaction
+        if self.transaction_type == "Request for Payments":
+            if self.amount > self.balance_walet:  # Ensure 'balance_wallet' is used correctly
+                frappe.throw(_("The requested payment amount cannot exceed the balance in the wallet."))
+
+        elif self.transaction_type == "Withdraw":
+            if self.amount > self.available_amount_in_wallet:  # Ensure correct wallet field is referenced
+                frappe.throw(_("The withdrawal amount cannot exceed the available amount in the wallet."))
+
+        # Ensure that the amount is not negative for any transaction type
+        if self.amount <= 0:
+            frappe.throw(_("The transaction amount should be a positive value."))
+
 
     def on_submit(self):
         self.create_journal_entry()
         self.create_schedule_journal_entries()
-        self.investment_status = "Investment Approved"
+        self.investment_status = "Approved"
         self.save()  # Save the document after updating the status
 
     @frappe.whitelist()
@@ -56,15 +61,15 @@ class InvestmentApp(Document):
 
             elif self.transaction_type == "Withdraw":
                 self.add_journal_entry_row(journal_entry, accounts['withdrawal_payable_account'], 0, self.withdraw_grand_totals, cost_center=accounts['cost_center'])
-                self.add_journal_entry_row(journal_entry, accounts['portfolio_account'], self.amount, 0, cost_center=accounts['cost_center'])
-                self.add_journal_entry_row(journal_entry, accounts['investment_interest'], self.withdraw_percen_amount, 0, cost_center=accounts['cost_center'])
+                self.add_journal_entry_row(journal_entry, accounts['portfolio_account'], self.amount_withrowned, 0, cost_center=accounts['cost_center'])
+                self.add_journal_entry_row(journal_entry, accounts['investment_interest'], self.interets_withrowned, 0, cost_center=accounts['cost_center'])
                 # self.add_journal_entry_row(journal_entry, default_paid_to_account, 0, self.amount, cost_center=accounts['cost_center'])
 
             elif self.transaction_type == "Re-invest":
                 self.add_journal_entry_row(journal_entry, accounts['withdrawal_payable_account'], self.amount, 0, cost_center=accounts['cost_center'])
                 self.add_journal_entry_row(journal_entry, accounts['portfolio_account'], 0, self.amount, cost_center=accounts['cost_center'])
 
-            elif self.transaction_type == "Request Payment":
+            elif self.transaction_type == "Request for Payments":
                 self.add_journal_entry_row(journal_entry, accounts['withdrawal_payable_account'], self.withdral_amount, 0, cost_center=accounts['cost_center'])
                 self.add_journal_entry_row(journal_entry, self.pay_to, 0, self.withdral_amount, cost_center=accounts['cost_center'])
 

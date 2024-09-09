@@ -5,7 +5,7 @@ frappe.ready(function() {
         frappe.call({
             method: 'loan_investment_app.custom_api.user.get_logged_in_user_info',
             callback: function (response) {
-                console.log(response);
+                // console.log(response);
                 if (response.message) {
                     // Set the fetched user information to the appropriate fields  
                     frappe.web_form.set_value('custom_member_id', response.message.custom_member_id);

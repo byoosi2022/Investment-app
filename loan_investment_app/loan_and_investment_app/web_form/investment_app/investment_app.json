@@ -24,7 +24,7 @@
  "list_columns": [],
  "login_required": 0,
  "max_attachment_size": 0,
- "modified": "2024-09-07 21:56:35.317966",
+ "modified": "2024-09-09 23:53:26.127132",
  "modified_by": "Administrator",
  "module": "Loan and Investment App",
  "name": "investment-app",
@@ -57,7 +57,7 @@
    "label": "Transaction Type",
    "max_length": 0,
    "max_value": 0,
-   "options": "\nDeposit\nInvest\nTransfer\nWithdraw\nRe-invest\nRequest Payment",
+   "options": "\nDeposit\nInvest\nTransfer\nWithdraw\nRe-invest\nRequest for Payments",
    "read_only": 0,
    "reqd": 0,
    "show_in_filter": 0
@@ -120,7 +120,7 @@
    "label": "Percent Amount",
    "max_length": 0,
    "max_value": 0,
-   "read_only": 1,
+   "read_only": 0,
    "reqd": 0,
    "show_in_filter": 0
   },
@@ -168,6 +168,19 @@
    "label": "% Grand Totals",
    "max_length": 0,
    "max_value": 0,
+   "read_only": 0,
+   "reqd": 0,
+   "show_in_filter": 0
+  },
+  {
+   "allow_read_on_all_link_options": 0,
+   "fieldname": "available_amount_in_wallet",
+   "fieldtype": "Currency",
+   "hidden": 0,
+   "label": "Available Amount in Wallet",
+   "max_length": 0,
+   "max_value": 0,
+   "precision": "",
    "read_only": 0,
    "reqd": 0,
    "show_in_filter": 0
@@ -252,7 +265,7 @@
    "fieldname": "balance_walet",
    "fieldtype": "Currency",
    "hidden": 0,
-   "label": "Balance in Walet",
+   "label": "Amount in Wallet",
    "max_length": 0,
    "max_value": 0,
    "read_only": 0,
@@ -280,6 +293,19 @@
    "label": "Investor Account Name",
    "max_length": 0,
    "max_value": 0,
+   "read_only": 0,
+   "reqd": 0,
+   "show_in_filter": 0
+  },
+  {
+   "allow_read_on_all_link_options": 0,
+   "fieldname": "portifolia_account",
+   "fieldtype": "Currency",
+   "hidden": 0,
+   "label": "Deposits",
+   "max_length": 0,
+   "max_value": 0,
+   "precision": "",
    "read_only": 0,
    "reqd": 0,
    "show_in_filter": 0
@@ -319,6 +345,32 @@
    "max_length": 0,
    "max_value": 0,
    "read_only": 0,
+   "reqd": 0,
+   "show_in_filter": 0
+  },
+  {
+   "allow_read_on_all_link_options": 0,
+   "fieldname": "amount_withrowned",
+   "fieldtype": "Currency",
+   "hidden": 0,
+   "label": "Amount withrowned",
+   "max_length": 0,
+   "max_value": 0,
+   "precision": "",
+   "read_only": 1,
+   "reqd": 0,
+   "show_in_filter": 0
+  },
+  {
+   "allow_read_on_all_link_options": 0,
+   "fieldname": "interets_withrowned",
+   "fieldtype": "Currency",
+   "hidden": 0,
+   "label": "Interets withrowned",
+   "max_length": 0,
+   "max_value": 0,
+   "precision": "",
+   "read_only": 1,
    "reqd": 0,
    "show_in_filter": 0
   }

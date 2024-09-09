@@ -1,0 +1,31 @@
+{
+ "add_total_row": 0,
+ "columns": [],
+ "creation": "2024-09-09 13:29:52.642333",
+ "disable_prepared_report": 0,
+ "disabled": 0,
+ "docstatus": 0,
+ "doctype": "Report",
+ "filters": [],
+ "idx": 0,
+ "is_standard": "Yes",
+ "json": "{\"filters\":[[\"Investment App\",\"transaction_type\",\"=\",\"Request Payment\",false]],\"fields\":[[\"name\",\"Investment App\"],[\"docstatus\",\"Investment App\"],[\"party_name\",\"Investment App\"],[\"posting_date\",\"Investment App\"],[\"amount\",\"Investment App\"],[\"balance_walet\",\"Investment App\"],[\"investor_bank_name\",\"Investment App\"],[\"investor_account_name\",\"Investment App\"],[\"investor_account_number\",\"Investment App\"],[\"party_type\",\"Investment App\"]],\"order_by\":\"`tabInvestment App`.`modified` desc\",\"add_totals_row\":0,\"page_length\":20,\"column_widths\":{\"name\":120,\"docstatus\":120,\"party_name\":120,\"posting_date\":120,\"amount\":120,\"balance_walet\":120,\"investor_bank_name\":120,\"investor_account_name\":120,\"investor_account_number\":120,\"party_type\":120},\"group_by\":null}",
+ "letter_head": "METRO G4 LETTER HEAD",
+ "modified": "2024-09-09 15:12:39.102344",
+ "modified_by": "Administrator",
+ "module": "Loan and Investment App",
+ "name": "Investment Request Payment Report",
+ "owner": "brevicconsult@gmail.com",
+ "prepared_report": 0,
+ "ref_doctype": "Investment App",
+ "report_name": "Investment Request Payment Report",
+ "report_type": "Report Builder",
+ "roles": [
+  {
+   "role": "System Manager"
+  },
+  {
+   "role": "Investor"
+  }
+ ]
+}

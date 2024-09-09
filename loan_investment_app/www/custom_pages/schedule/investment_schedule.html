@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../../assets/loan_investment_app/css/transaction_report.css">
+    <link href="https://fonts.googleapis.com/css2?family=Juana&display=swap" rel="stylesheet">
+    <title>{{ title }}</title>
+   
+
+</head>
+<body>
+
+    {% include "loan_investment_app/templates/includes/sidebar.html" %}
+
+    <div class="content">
+        <h2>{{ title }}</h2>
+    
+        <table>
+            <thead>
+                <tr>
+                    <th>Start Date</th>
+                    <th>End Date</th>
+                    <th class="align-right">Principal Amount</th>
+                    <th class="align-right">Interest Amount</th>
+                    <th class="align-right">Available Amount</th>
+                </tr>
+            </thead>
+            <!-- ₦ -->
+            <tbody>
+                {% for row in report_data %}
+                    {% if row.investment_schedule %}
+                        {% for schedule in row.investment_schedule %}
+                        <tr>
+                            <td class="start-date">{{ schedule.start_date }}</td>
+                            <td>{{ schedule.end_date }}</td>
+                            <td class="align-right">{{ '{:,.2f}'.format(schedule.principal_amount) }}</td>
+                            <td class="align-right">{{ '{:,.2f}'.format(schedule.amount) }}</td>
+                            <td class="align-right">{{ '{:,.2f}'.format(schedule.available_amount) }}</td>
+                        </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr>
+                            <td colspan="5">No investment schedule available.</td>
+                        </tr>
+                    {% endif %}
+                {% endfor %}
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="2" style="text-align: right;"><strong>Total:</strong></td>
+                    <td class="align-right"><span>{{ '{:,.2f}'.format(total_principal) }}</span></td>
+                    <td class="align-right"><span>{{ '{:,.2f}'.format(total_interest) }}</span></td>
+                    <td class="align-right"><span>{{ '{:,.2f}'.format(total_available) }}</span></td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+    
+    <style>
+        .align-right {
+            text-align: right;
+        }
+    </style>
+    
+    <style>
+        .align-right {
+            text-align: right;
+        }
+    </style>
+    
+    <style>
+        .align-right {
+            text-align: right;
+        }
+    </style>
+       
+    <style>
+        .align-right {
+            text-align: right;
+        }
+    </style>
+    
+    <script src="../../assets/loan_investment_app/js/transaction_report.js"></script>
+</body>
+</html>

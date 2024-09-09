@@ -109,6 +109,9 @@ def get_party_name(party):
     
 from dateutil.relativedelta import relativedelta
 
+from datetime import datetime
+import frappe
+
 @frappe.whitelist()
 def fetch_investment_schedule(start_date=None, end_date=None):
     user = frappe.get_doc("User", frappe.session.user)
@@ -149,7 +152,7 @@ def fetch_investment_schedule(start_date=None, end_date=None):
                     WHERE party = %s
                 )
                 AND docstatus = 1
-                ORDER BY date ASC  -- Using 'date' field in child table
+                ORDER BY start_date ASC  -- Using 'start_date' field in child table
             """, (member_name,), as_dict=True)
 
             # Check if start_date and end_date are provided, and parse them to date objects
@@ -159,14 +162,17 @@ def fetch_investment_schedule(start_date=None, end_date=None):
 
                 # Loop through the investment schedule data and sum up the percent_amount for valid entries
                 for schedule in investment_schedule_data:
-                    schedule_date = schedule['date']  # Date from child table
+                    schedule_start_date = schedule['start_date']  # Start date from child table
+                    schedule_end_date = schedule['end_date']      # End date from child table
 
-                    # Ensure schedule_date is a date, not datetime
-                    if isinstance(schedule_date, datetime):
-                        schedule_date = schedule_date.date()
+                    # Ensure schedule dates are date objects
+                    if isinstance(schedule_start_date, datetime):
+                        schedule_start_date = schedule_start_date.date()
+                    if isinstance(schedule_end_date, datetime):
+                        schedule_end_date = schedule_end_date.date()
 
-                    # Check if the schedule date falls within the selected date range
-                    if start_date <= schedule_date <= end_date:
+                    # Check if the provided date range intersects with the schedule's date range
+                    if (start_date <= schedule_end_date) and (end_date >= schedule_start_date):
                         # Sum the percent_amount
                         total_percent_amount += schedule.get('amount', 0)
 

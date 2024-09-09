@@ -112,6 +112,9 @@ from dateutil.relativedelta import relativedelta
 from datetime import datetime
 import frappe
 
+from datetime import datetime
+import frappe
+
 @frappe.whitelist()
 def fetch_investment_schedule(start_date=None, end_date=None):
     user = frappe.get_doc("User", frappe.session.user)
@@ -144,15 +147,13 @@ def fetch_investment_schedule(start_date=None, end_date=None):
 
             # Fetch only submitted investment schedules for the member based on the parent investment app
             investment_schedule_data = frappe.db.sql("""
-                SELECT *
-                FROM `tabInvestment Schedule`
-                WHERE parent IN (
-                    SELECT name
-                    FROM `tabInvestment App`
-                    WHERE party = %s
-                )
-                AND docstatus = 1
-                ORDER BY start_date ASC  -- Using 'start_date' field in child table
+                SELECT inv_schedule.*
+                FROM `tabInvestment Schedule` inv_schedule
+                JOIN `tabInvestment App` inv_app ON inv_schedule.parent = inv_app.name
+                WHERE inv_app.party = %s
+                AND inv_app.docstatus = 1
+                AND inv_app.investment_status = 'Investment Approved'  -- Corrected filter for parent status
+                ORDER BY inv_schedule.start_date ASC  -- Using 'start_date' field in child table
             """, (member_name,), as_dict=True)
 
             # Check if start_date and end_date are provided, and parse them to date objects

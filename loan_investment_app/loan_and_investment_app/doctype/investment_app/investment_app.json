@@ -15,6 +15,7 @@
   "pay_to",
   "party_type",
   "party",
+  "investment_status",
   "column_break_bpehu",
   "party_name",
   "amount",
@@ -199,12 +200,19 @@
    "fieldtype": "Currency",
    "hidden": 1,
    "label": "Withdraw Grand Totals"
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "investment_status",
+   "fieldtype": "Select",
+   "label": "Investment Status",
+   "options": "\nInvestment Received\nInvestment Approved"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2024-09-07 12:22:34.780924",
+ "modified": "2024-09-09 18:26:46.612616",
  "modified_by": "Administrator",
  "module": "Loan and Investment App",
  "name": "Investment App",

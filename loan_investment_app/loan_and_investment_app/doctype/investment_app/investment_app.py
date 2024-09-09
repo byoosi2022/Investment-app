@@ -5,52 +5,25 @@ import frappe
 from frappe import _
 from frappe.model.document import Document
 from datetime import datetime
-from frappe.utils import today
 from frappe.utils import today, getdate
 
-
-
-
 class InvestmentApp(Document):
+    
+    def on_update(self):
+        if not self.investment_status:
+            self.investment_status = "Investment Received"
+
     def validate(self):
-        # Validate that the amount does not exceed the balance_wallet for "Request Payment" transactions
-        if self.transaction_type == "Request Payment" or self.transaction_type == "Withdraw":
-            if self.amount > self.balance_walet:
+        # Validate that the amount does not exceed the balance_wallet for "Request Payment" or "Withdraw" transactions
+        if self.transaction_type in ["Request Payment", "Withdraw"]:
+            if self.amount > self.balance_wallet:  # Corrected 'balance_walet' to 'balance_wallet'
                 frappe.throw(_("The amount cannot exceed the balance wallet amount."))
 
-        # if self.transaction_type == "Withdraw" and self.investment_schedule:
-        #     # Fetch all InvestmentApp documents with matching conditions
-        #     investment_docs = frappe.get_all(
-        #         "Investment App",
-        #         filters={"investment_schedule": self.investment_schedule},
-        #         fields=["name", "start_date", "end_date", "balance_wallet"]
-        #     )
-
-        #     # Iterate through the fetched documents
-        #     for investment in investment_docs:
-        #         start_date = investment.get("start_date")
-        #         end_date = investment.get("end_date")
-        #         current_date = getdate(today())  # Get the current date as a date object
-
-        #         # Ensure both start_date and end_date are valid before comparison
-        #         if start_date and end_date:
-        #             start_date = getdate(start_date)
-        #             end_date = getdate(end_date)
-
-        #             # Check if the schedule is within the valid range
-        #             if not (start_date <= current_date <= end_date):
-        #                 frappe.throw(_("Transaction cannot be made. The investment with name {0} has an expired schedule (end date: {1}).").format(investment["name"], end_date))
-
-        #         # Validate that the withdraw amount does not exceed the balance_wallet
-        #         if self.amount > investment.get("balance_wallet", 0):
-        #             frappe.throw(_("The withdrawal amount exceeds the available balance in wallet for investment: {0}.").format(investment["name"]))
-        #     else:
-        #         frappe.throw(_("Invalid investment schedule format."))
-
-       
     def on_submit(self):
         self.create_journal_entry()
         self.create_schedule_journal_entries()
+        self.investment_status = "Investment Approved"
+        self.save()  # Save the document after updating the status
 
     @frappe.whitelist()
     def create_journal_entry(self):

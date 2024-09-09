@@ -51,7 +51,7 @@ def get_context(context):
     # Fetch report data from the 'Investment App' doctype for the specific party
     report_data = frappe.get_list(
         'Investment App',  # Replace with your doctype
-        fields=['party_name', 'party', 'posting_date', 'start_date', 'end_date', 'transaction_type', 'amount'],
+        fields=['party_name', 'party', 'investment_status','posting_date', 'start_date', 'end_date', 'transaction_type', 'amount'],
         filters={
             'party': specific_party,  # Filter by specific party
         },

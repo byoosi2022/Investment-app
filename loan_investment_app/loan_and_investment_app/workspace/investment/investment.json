@@ -1,6 +1,6 @@
 {
  "charts": [],
- "content": "[{\"id\":\"heZXSyTyUu\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\">Investment</span>\",\"col\":12}},{\"id\":\"nFrNjEVQEu\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"investments\",\"col\":3}},{\"id\":\"Chq8VhDN1v\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Investment Settings\",\"col\":3}},{\"id\":\"HGk01RaOt_\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Member\",\"col\":3}},{\"id\":\"_DttgUspar\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Investment Report\",\"col\":3}},{\"id\":\"NusVEKPmHP\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Deposit Report\",\"col\":3}}]",
+ "content": "[{\"id\":\"heZXSyTyUu\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\">Investment</span>\",\"col\":12}},{\"id\":\"nFrNjEVQEu\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"investments\",\"col\":3}},{\"id\":\"Chq8VhDN1v\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Investment Settings\",\"col\":3}},{\"id\":\"HGk01RaOt_\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Member\",\"col\":3}},{\"id\":\"_DttgUspar\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Investment Report\",\"col\":3}},{\"id\":\"NusVEKPmHP\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Investment Deposit Report\",\"col\":3}},{\"id\":\"sNQWLn21_-\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Investment Request Payment Report\",\"col\":3}},{\"id\":\"wYZ_i8x3c_\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Re-Investment Report\",\"col\":3}},{\"id\":\"WeJQOERAD3\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Investment Withdrawal Report\",\"col\":3}}]",
  "creation": "2024-09-03 04:21:17.384699",
  "custom_blocks": [],
  "docstatus": 0,
@@ -12,7 +12,7 @@
  "is_hidden": 0,
  "label": "Investment",
  "links": [],
- "modified": "2024-09-09 11:29:23.944724",
+ "modified": "2024-09-09 13:31:15.723262",
  "modified_by": "brevicconsult@gmail.com",
  "module": "Loan and Investment App",
  "name": "Investment",
@@ -34,8 +34,29 @@
   {
    "color": "Grey",
    "doc_view": "List",
+   "label": "Investment Request Payment Report",
+   "link_to": "Investment Request Payment Report",
+   "type": "Report"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
    "label": "Investment Report",
    "link_to": "Investment Report",
+   "type": "Report"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Re-Investment Report",
+   "link_to": "Re-Investment Report",
+   "type": "Report"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Investment Withdrawal Report",
+   "link_to": "Withdrawal Report",
    "type": "Report"
   },
   {
@@ -49,7 +70,7 @@
   {
    "color": "Grey",
    "doc_view": "List",
-   "label": "Deposit Report",
+   "label": "Investment Deposit Report",
    "link_to": "Deposit Report",
    "type": "Report"
   },

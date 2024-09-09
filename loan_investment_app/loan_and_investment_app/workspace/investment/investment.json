@@ -1,6 +1,6 @@
 {
  "charts": [],
- "content": "[{\"id\":\"heZXSyTyUu\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\">Investment</span>\",\"col\":12}},{\"id\":\"nFrNjEVQEu\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"investments\",\"col\":3}},{\"id\":\"Chq8VhDN1v\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Investment Settings\",\"col\":3}},{\"id\":\"HGk01RaOt_\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Member\",\"col\":3}}]",
+ "content": "[{\"id\":\"heZXSyTyUu\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\">Investment</span>\",\"col\":12}},{\"id\":\"nFrNjEVQEu\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"investments\",\"col\":3}},{\"id\":\"Chq8VhDN1v\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Investment Settings\",\"col\":3}},{\"id\":\"HGk01RaOt_\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Member\",\"col\":3}},{\"id\":\"_DttgUspar\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Investment Report\",\"col\":3}},{\"id\":\"NusVEKPmHP\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Deposit Report\",\"col\":3}}]",
  "creation": "2024-09-03 04:21:17.384699",
  "custom_blocks": [],
  "docstatus": 0,
@@ -12,8 +12,8 @@
  "is_hidden": 0,
  "label": "Investment",
  "links": [],
- "modified": "2024-09-09 10:59:09.944242",
- "modified_by": "Administrator",
+ "modified": "2024-09-09 11:29:23.944724",
+ "modified_by": "brevicconsult@gmail.com",
  "module": "Loan and Investment App",
  "name": "Investment",
  "number_cards": [],
@@ -34,10 +34,24 @@
   {
    "color": "Grey",
    "doc_view": "List",
+   "label": "Investment Report",
+   "link_to": "Investment Report",
+   "type": "Report"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
    "label": "Investment Settings",
    "link_to": "Investment Settings",
    "stats_filter": "[]",
    "type": "DocType"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Deposit Report",
+   "link_to": "Deposit Report",
+   "type": "Report"
   },
   {
    "color": "Grey",

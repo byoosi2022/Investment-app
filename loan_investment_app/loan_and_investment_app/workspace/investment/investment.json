@@ -12,8 +12,8 @@
  "is_hidden": 0,
  "label": "Investment",
  "links": [],
- "modified": "2024-09-09 13:31:15.723262",
- "modified_by": "brevicconsult@gmail.com",
+ "modified": "2024-09-10 00:17:22.068149",
+ "modified_by": "Administrator",
  "module": "Loan and Investment App",
  "name": "Investment",
  "number_cards": [],
@@ -24,9 +24,6 @@
  "roles": [
   {
    "role": "Accounts Manager"
-  },
-  {
-   "role": "Investment User Staff"
   }
  ],
  "sequence_id": 375.0,

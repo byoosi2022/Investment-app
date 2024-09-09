@@ -26,9 +26,10 @@ frappe.ready(function() {
             populate_schedule_table(value)
         });
 
-        // Event listeners for interest_rate and amount fields
+        // Event listeners for interest_rate and amount fields interest_rate
         frappe.web_form.on('interest_rate', function(field, value) {
             calculate_percent_amount();
+            frappe.web_form.set_df_property('end_date', 'hidden', 0);
         });
         frappe.web_form.on('amount', function(field, value) {
             calculate_percent_amount();
@@ -246,7 +247,7 @@ function populate_schedule_table(transaction_type, start_date, end_date) {
             // Make fields visible for 'Invest' and 'Re-invest'
             frappe.web_form.set_df_property('interest_rate', 'hidden', 0);
             frappe.web_form.set_df_property('start_date', 'hidden', 0);
-            frappe.web_form.set_df_property('end_date', 'hidden', 0);
+            frappe.web_form.set_df_property('end_date', 'hidden', 1);
             frappe.web_form.set_df_property('percent_amount', 'hidden', 1);
             frappe.web_form.set_df_property('mode_of_payment', 'hidden', 1);
             frappe.web_form.set_df_property('investor_bank_name', 'hidden', 1);
@@ -271,7 +272,7 @@ function populate_schedule_table(transaction_type, start_date, end_date) {
             // Make mode_of_payment visible for 'Deposit' and 'Withdraw' investor_bank_name
             frappe.web_form.set_df_property('interest_rate', 'hidden', 1);
             frappe.web_form.set_df_property('start_date', 'hidden', 0);
-            frappe.web_form.set_df_property('end_date', 'hidden', 0);
+            frappe.web_form.set_df_property('end_date', 'hidden', 1);
             frappe.web_form.set_df_property('withdraw_percen_amount', 'hidden', 0);
             frappe.web_form.set_df_property('mode_of_payment', 'hidden', 1);
             frappe.web_form.set_df_property('investment_schedule', 'hidden', 0);

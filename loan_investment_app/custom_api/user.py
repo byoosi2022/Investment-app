@@ -32,17 +32,21 @@ def get_logged_in_user_info():
     # Fetch member details if an investment account was found
     if investment_account:
         member_data = frappe.db.sql("""
-            SELECT member_name, custom_investor_account_name, custom_investor_account_number, custom_investor_bank_name
+            SELECT  name,member_name, email_id,custom_resident,membership_type,custom_investor_account_name, custom_investor_account_number, custom_investor_bank_name
             FROM `tabMember`
             WHERE name = %s
         """, (investment_account[0].for_value,), as_dict=True)
 
-        # Check if member data is found and set member details
+        # Check if member data is found and set member details 
         if member_data:
             member_name = member_data[0].member_name
             custom_investor_account_number = member_data[0].custom_investor_account_number
             custom_investor_account_name = member_data[0].custom_investor_account_name
             custom_investor_bank_name = member_data[0].custom_investor_bank_name
+            email_id = member_data[0].email_id
+            pan_number = member_data[0].custom_resident
+            membership_type = member_data[0].membership_type
+            custom_member_id = member_data[0].name
 
         # Fetch total credits and debits for the member in the account
         balance_data = frappe.db.sql("""
@@ -69,6 +73,10 @@ def get_logged_in_user_info():
         "custom_investor_account_number": custom_investor_account_number,
         "custom_investor_account_name": custom_investor_account_name,
         "custom_investor_bank_name": custom_investor_bank_name,
+        "email_id": email_id,
+        "custom_member_id":custom_member_id,
+        "custom_resident": pan_number,
+        "membership_type":membership_type,
         "total_credit": total_credit,  # Total credits
         "total_debit": total_debit,     # Total debits
         "balance": balance                # Balance (total_credit - total_debit)

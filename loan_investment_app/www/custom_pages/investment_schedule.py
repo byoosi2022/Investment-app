@@ -41,7 +41,7 @@ def get_logged_in_user_info():
 
     return user_info2
 
-def get_context(context):
+def get_context(context,posting_date=None):
     # Get the logged-in user's information
     user_info = get_logged_in_user_info()
     specific_party = user_info['member']  # Filter by the logged-in user's member
@@ -52,7 +52,7 @@ def get_context(context):
         fields=['party_name', 'party', 'posting_date', 'transaction_type', 'amount','investment_schedule'],
         filters={
             'party': specific_party,  # Filter by specific party
-            # 'transaction_type': 'Re-invest'  # Filter by transaction type
+            'posting_date': 'Re-invest'  # Filter by transaction type
         },
         limit_page_length=50  # Limit the number of records to retrieve
     )

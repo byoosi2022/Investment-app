@@ -3,7 +3,7 @@
   "custom_module": "Loan and Investment App",
   "docstatus": 0,
   "doctype": "Website Sidebar",
-  "modified": "2024-09-08 17:58:51.417299",
+  "modified": "2024-09-09 17:01:44.112350",
   "name": "Investment Bar",
   "sidebar_items": [
    {
@@ -27,7 +27,7 @@
     "parent": "Investment Bar",
     "parentfield": "sidebar_items",
     "parenttype": "Website Sidebar",
-    "route": "/custom_pages/sales_invoices_report",
+    "route": "/custom_pages/tranctions/transaction_report",
     "title": "Transaction Report"
    },
    {
@@ -35,7 +35,7 @@
     "parent": "Investment Bar",
     "parentfield": "sidebar_items",
     "parenttype": "Website Sidebar",
-    "route": null,
+    "route": "/custom_pages/schedule/investment_schedule",
     "title": "Investment Schedules"
    }
   ],

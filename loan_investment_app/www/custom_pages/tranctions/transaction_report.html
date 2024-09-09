@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Link to external CSS file -->
+    <link rel="stylesheet" href="../../assets/loan_investment_app/css/transaction_report.css">
+    <title>{{ title }}</title>
+</head>
+<body>
+    {% include "loan_investment_app/templates/includes/sidebar.html" %}
+    <div class="content">
+        <h2>{{ title }}</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Transaction Type</th>
+                    <th>Posting Date</th>
+                    <th>Amount</th>
+                    <th>Start Date</th>
+                    <th>End Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in report_data %}
+                <tr>
+                    <td>{{ row.transaction_type }}</td>
+                    <td class="posting-date">{{ row.posting_date }}</td>
+                    <td>{{ '{:,.2f}'.format(row.amount) }}</td>
+                    <td class="start-date">{{ row.start_date }}</td>
+                    <td class="end-date">{{ row.end_date }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <script src="./transaction_report.js"></script>
+</body>
+</html>

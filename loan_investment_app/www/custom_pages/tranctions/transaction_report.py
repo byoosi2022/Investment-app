@@ -57,7 +57,14 @@ def get_context(context):
         },
         limit_page_length=100  # Limit the number of records to retrieve
     )
+    total_principal = 0
+    for tranct in report_data:
+        total_principal += tranct.amount
+        
+        
+
     # # Add report data and title to the context
     context.report_data = report_data
     context.title = "Investment Report"
+    context.total_principal = total_principal
 

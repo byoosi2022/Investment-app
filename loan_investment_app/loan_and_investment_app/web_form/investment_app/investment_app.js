@@ -186,7 +186,7 @@ function populate_schedule_table(transaction_type, start_date, end_date) {
                 end_date: end_date       // Pass end date as argument
             },
             callback: function (response) {
-                // console.log(response);
+                console.log(response);
                 if (response.message) {
                     // Clear existing rows in the investment_schedule child table
                     let child_table = frappe.web_form.get_field('investment_schedule');
@@ -272,7 +272,7 @@ function populate_schedule_table(transaction_type, start_date, end_date) {
             // Make mode_of_payment visible for 'Deposit' and 'Withdraw' investor_bank_name
             frappe.web_form.set_df_property('interest_rate', 'hidden', 1);
             frappe.web_form.set_df_property('start_date', 'hidden', 0);
-            frappe.web_form.set_df_property('end_date', 'hidden', 1);
+            frappe.web_form.set_df_property('end_date', 'hidden', 0);
             frappe.web_form.set_df_property('withdraw_percen_amount', 'hidden', 0);
             frappe.web_form.set_df_property('mode_of_payment', 'hidden', 1);
             frappe.web_form.set_df_property('investment_schedule', 'hidden', 0);

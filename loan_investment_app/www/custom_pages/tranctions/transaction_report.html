@@ -26,12 +26,21 @@
                 <tr>
                     <td>{{ row.transaction_type }}</td>
                     <td class="posting-date">{{ row.posting_date }}</td>
-                    <td>{{ '{:,.2f}'.format(row.amount) }}</td>
+                    <td class="align-right">{{ '{:,.2f}'.format(row.amount) }}</td>
                     <td class="start-date">{{ row.start_date }}</td>
                     <td class="end-date">{{ row.end_date }}</td>
                 </tr>
                 {% endfor %}
             </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="2" style="text-align: right;"><strong>Total:</strong></td>
+                    <td class="align-right"><span>{{ '{:,.2f}'.format(total_principal) }}</span></td>
+                    <td class="align-right"><span></span></td>
+                    <td class="align-right"><span></span></td>
+              
+                </tr>
+            </tfoot>
         </table>
     </div>
     <script src="./transaction_report.js"></script>

@@ -225,12 +225,7 @@ fixtures = [
             ["module", "=", "Loan and Investment App"]
         ]
     },
-    {
-        "doctype": "Website Sidebar",
-        "filters": [
-            ["custom_module", "=", "Loan and Investment App"]
-        ]
-    },
+
 ]
 
 # Authentication and authorization

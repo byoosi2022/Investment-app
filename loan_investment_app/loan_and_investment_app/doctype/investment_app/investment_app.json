@@ -38,7 +38,8 @@
   "investor_bank_name",
   "investor_account_number",
   "column_break_vr5fd",
-  "investor_account_name"
+  "investor_account_name",
+  "workflow"
  ],
  "fields": [
   {
@@ -59,7 +60,7 @@
    "fieldname": "transaction_type",
    "fieldtype": "Select",
    "label": "Transaction Type",
-   "options": "\nDeposit\nInvest\nTransfer\nWithdraw\nRe-invest\nRequest for Payments"
+   "options": "\nDeposit\nInvest\nWithdraw\nRe-invest\nRequest for Payments"
   },
   {
    "default": "Cash",
@@ -100,6 +101,7 @@
    "label": "Remarks"
   },
   {
+   "default": "now",
    "fieldname": "posting_date",
    "fieldtype": "Date",
    "label": "Postin Date"
@@ -230,7 +232,7 @@
    "in_list_view": 1,
    "in_preview": 1,
    "in_standard_filter": 1,
-   "label": "Amount withrowned",
+   "label": "Principal Amount Withdrawn",
    "read_only": 1
   },
   {
@@ -239,14 +241,21 @@
    "in_list_view": 1,
    "in_preview": 1,
    "in_standard_filter": 1,
-   "label": "Interets withrowned",
+   "label": "Interest Withdrawn",
    "read_only": 1
+  },
+  {
+   "default": "Investment App (Request for Payment) Workflow",
+   "fieldname": "workflow",
+   "fieldtype": "Link",
+   "label": "workflow",
+   "options": "Workflow"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2024-09-09 23:52:19.888638",
+ "modified": "2024-09-12 01:15:57.986355",
  "modified_by": "Administrator",
  "module": "Loan and Investment App",
  "name": "Investment App",

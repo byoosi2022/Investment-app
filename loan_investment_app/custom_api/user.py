@@ -27,8 +27,6 @@ def get_logged_in_user_info():
     custom_investor_account_number = None
     custom_investor_account_name = None
     custom_investor_bank_name = None
-    total_credit = 0
-    total_debit = 0
     balance_portfolia = 0
     balance_withdrawal_payable = 0
     balance_deposit = 0
@@ -37,6 +35,7 @@ def get_logged_in_user_info():
     pan_number = None
     membership_type = None
     custom_member_id = None
+    amount_in_wallet = 0  # Initialize amount_in_wallet to ensure it has a default value
 
     # If an investment account exists, fetch member details
     if investment_account:
@@ -83,7 +82,7 @@ def get_logged_in_user_info():
                     SUM(CASE WHEN account = %s THEN debit ELSE 0 END) AS total_debit_interest
                 FROM `tabGL Entry`
                 WHERE party_type = 'Member' AND party = %s
-            """, (portfolia, portfolia, withdrawal_payable, withdrawal_payable,deposit,deposit,interest, interest, investment_account[0].for_value), as_dict=True)
+            """, (portfolia, portfolia, withdrawal_payable, withdrawal_payable, deposit, deposit, interest, interest, investment_account[0].for_value), as_dict=True)
 
             if balance_data:
                 total_credit_portfolia = balance_data[0].total_credit_portfolia or 0
@@ -100,7 +99,7 @@ def get_logged_in_user_info():
                 balance_withdrawal_payable = total_credit_withdrawal - total_debit_withdrawal
                 balance_deposit = total_credit_deposit - total_debit_deposit
                 balance_interest = total_credit_interest - total_debit_interest
-                amount_in_wallet = balance_interest + balance_portfolia
+                amount_in_wallet = balance_interest + balance_portfolia  # Now amount_in_wallet is always initialized
 
     # Prepare the response with all user and account information
     user_info2 = {
@@ -119,11 +118,10 @@ def get_logged_in_user_info():
         "balance_deposit": balance_deposit,
         "balance_interest": balance_interest,
         "balance_amount_in_wallet": amount_in_wallet,
- 
-            
     }
 
     return user_info2
+
 
 @frappe.whitelist()
 def get_party_name(party):
@@ -192,9 +190,10 @@ def fetch_investment_schedule(start_date=None, end_date=None):
                 JOIN `tabInvestment App` inv_app ON inv_schedule.parent = inv_app.name
                 WHERE inv_app.party = %s
                 AND inv_app.docstatus = 1
-                AND inv_app.investment_status = 'Approved'  -- Corrected filter for parent status
+                AND inv_app.investment_status = 'Approved'  -- Filter for parent status
+                AND inv_app.transaction_type IN ('Re-invest', 'Invest')  -- Filter for transaction type
                 ORDER BY inv_schedule.start_date ASC  -- Using 'start_date' field in child table
-            """, (member_name,), as_dict=True)
+                """, (member_name,), as_dict=True)
 
             # Check if start_date and end_date are provided, and parse them to date objects
             if start_date and end_date:

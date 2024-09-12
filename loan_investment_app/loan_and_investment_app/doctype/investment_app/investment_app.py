@@ -1,7 +1,7 @@
 import frappe
 from frappe import _
 from frappe.model.document import Document
-from frappe.utils import today, getdate
+from frappe.utils import getdate
 
 class InvestmentApp(Document):
 
@@ -12,16 +12,51 @@ class InvestmentApp(Document):
 
         # Validate transaction amounts based on the type of transaction
         if self.transaction_type == "Request for Payments":
-            if self.amount > self.balance_walet:  # Ensure 'balance_wallet' is used correctly
-                frappe.throw(_("The requested payment amount cannot exceed the balance in the wallet."))
+            self.validate_payment_request()
 
         elif self.transaction_type == "Withdraw":
-            if self.amount > self.available_amount_in_wallet:  # Ensure correct wallet field is referenced
-                frappe.throw(_("The withdrawal amount cannot exceed the available amount in the wallet."))
+            self.validate_withdrawal()
 
-        # Ensure that the amount is not negative for any transaction type
+        # Ensure that the amount is not negative or None for any transaction type
+        if self.amount is None:
+            frappe.throw(_("The transaction amount cannot be empty."))
+        
         if self.amount <= 0:
             frappe.throw(_("The transaction amount should be a positive value."))
+
+
+    def validate_payment_request(self):
+        """Validate payment request amount against the wallet balance."""
+        if self.amount > self.balance_walet:  # Ensure 'balance_wallet' is used correctly
+            frappe.throw(_("The requested payment amount cannot exceed the balance in the wallet."))
+
+    def validate_withdrawal(self):
+        """Validate withdrawal amount and investment end dates."""
+        # Check if the withdrawal amount exceeds the available wallet amount
+        if self.amount > self.available_amount_in_wallet:
+            frappe.throw(_("The withdrawal amount cannot exceed the available amount in the wallet."))
+
+        # Fetch and sort all investments related by amount in descending order
+        investments = self.fetch_investments_for_party()
+        investments.sort(key=lambda x: x['amount'], reverse=True)  # Assuming 'amount' is a field in the Investment App
+
+        # Check if the withdrawal's posting date is less than the end date of any investment
+        for investment in investments:
+            if getdate(self.posting_date) < getdate(investment['end_date']):
+                frappe.throw(_("You cannot withdraw funds before the end date of the investment: {0}.").format(investment['end_date']))
+
+    def fetch_investments_for_party(self):
+        """Fetch investments related to the specific party."""
+        return frappe.get_list(
+            'Investment App',
+            fields=['name', 'end_date', 'posting_date', 'amount'],  # Added 'amount' field
+            filters={
+                'party': self.party,  # Filter by the specific party
+                'transaction_type': ['in', ['Re-invest', 'Invest']],
+                'docstatus': ['!=', 2],  # Exclude canceled records
+                'investment_status': 'Approved'
+            }
+        )
 
 
     def on_submit(self):
@@ -70,8 +105,8 @@ class InvestmentApp(Document):
                 self.add_journal_entry_row(journal_entry, accounts['portfolio_account'], 0, self.amount, cost_center=accounts['cost_center'])
 
             elif self.transaction_type == "Request for Payments":
-                self.add_journal_entry_row(journal_entry, accounts['withdrawal_payable_account'], self.withdral_amount, 0, cost_center=accounts['cost_center'])
-                self.add_journal_entry_row(journal_entry, self.pay_to, 0, self.withdral_amount, cost_center=accounts['cost_center'])
+                self.add_journal_entry_row(journal_entry, accounts['withdrawal_payable_account'], self.amount, 0, cost_center=accounts['cost_center'])
+                self.add_journal_entry_row(journal_entry, self.pay_to, 0, self.amount, cost_center=accounts['cost_center'])
 
             else:
                 frappe.throw(_("Invalid transaction type: {0}").format(self.transaction_type))

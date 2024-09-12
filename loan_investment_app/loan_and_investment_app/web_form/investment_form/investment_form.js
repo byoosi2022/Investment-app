@@ -5,10 +5,10 @@ frappe.ready(function() {
         frappe.call({
             method: 'loan_investment_app.custom_api.user.get_logged_in_user_info',
             callback: function (response) {
-                // console.log(response);
+                console.log(response);
                 if (response.message) {
                     // Set the fetched user information to the appropriate fields  
-                    frappe.web_form.set_value('custom_member_id', response.message.custom_member_id);
+                    frappe.web_form.set_value('custom_member_id', response.message.member);
 					frappe.web_form.set_value('custom_resident', response.message.custom_resident);
                     frappe.web_form.set_value('email_id', response.message.email_id);
                     frappe.web_form.set_value('member_name', response.message.member_name);

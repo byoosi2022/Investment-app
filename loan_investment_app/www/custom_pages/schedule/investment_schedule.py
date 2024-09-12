@@ -54,7 +54,7 @@ def get_context(context, posting_date=None):
             'party': specific_party,
             'transaction_type': ['in', ['Re-invest', 'Invest']],
             'docstatus': ['!=', 2],  # Exclude canceled records
-            'investment_status':'Approved'
+            'investment_status': 'Approved'
         },
         limit_page_length=50
     )
@@ -70,9 +70,9 @@ def get_context(context, posting_date=None):
             fields=['start_date', 'end_date', 'principal_amount', 'amount', 'available_amount'],
             filters={'parent': investment['name']}
         )
-        
-        # Sort investment_schedule by principal_amount in descending order
-        investment['investment_schedule'].sort(key=lambda x: x['principal_amount'], reverse=True)
+
+        # Sort investment_schedule by start_date in ascending order
+        investment['investment_schedule'].sort(key=lambda x: x['start_date'])
 
         # Calculate totals from the investment schedule 
         for schedule in investment['investment_schedule']:
@@ -80,14 +80,16 @@ def get_context(context, posting_date=None):
             total_available += schedule['available_amount']
             total_principal += schedule['principal_amount']
 
+    available_amount = total_principal + total_interest
+
     context.report_data = investments
     context.total_interest = total_interest  # Add total interest to context
-    context.total_available = total_available  # Add total available amount to context
+    context.total_available = available_amount  # Add total available amount to context
     context.total_principal = total_principal
 
     # Debug: print the fetched report data
     print("Fetched Report Data:", context.report_data)
     print("Total Interest:", total_interest)
-    print("Total Available Amount:", total_available)
+    print("Total Available Amount:", available_amount)
 
     context.title = "Investment Schedule Report"

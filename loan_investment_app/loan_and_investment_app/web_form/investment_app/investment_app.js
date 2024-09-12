@@ -276,9 +276,9 @@ function populate_schedule_table(transaction_type, start_date, end_date) {
         else if (transaction_type === 'Withdraw') {
             // Make mode_of_payment visible for 'Deposit' and 'Withdraw' investor_bank_name
             frappe.web_form.set_df_property('interest_rate', 'hidden', 1);
-            frappe.web_form.set_df_property('start_date', 'hidden', 0);
-            frappe.web_form.set_df_property('end_date', 'hidden', 0);
-            frappe.web_form.set_df_property('withdraw_percen_amount', 'hidden', 0);
+            frappe.web_form.set_df_property('start_date', 'hidden', 1);
+            frappe.web_form.set_df_property('end_date', 'hidden', 1);
+            frappe.web_form.set_df_property('withdraw_percen_amount', 'hidden', 1);
             frappe.web_form.set_df_property('mode_of_payment', 'hidden', 1);
             frappe.web_form.set_df_property('investment_schedule', 'hidden', 0);
             frappe.web_form.set_df_property('withdral_amount', 'hidden', 1);

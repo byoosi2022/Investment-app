@@ -10,6 +10,7 @@
   "portfolio_account",
   "percent_interest_amount_account",
   "investor_withdrawal_payable_account",
+  "witholding_tax_payable",
   "cost_center",
   "company"
  ],
@@ -64,11 +65,17 @@
    "fieldtype": "Link",
    "label": "Investor Withdrawal Payable Account",
    "options": "Account"
+  },
+  {
+   "fieldname": "witholding_tax_payable",
+   "fieldtype": "Link",
+   "label": "Witholding Tax Payable (FIRS) - 10 PERCENT (Investors)",
+   "options": "Account"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-09-04 18:49:43.194754",
+ "modified": "2024-09-20 13:56:04.099972",
  "modified_by": "Administrator",
  "module": "Loan and Investment App",
  "name": "Investment Settings",

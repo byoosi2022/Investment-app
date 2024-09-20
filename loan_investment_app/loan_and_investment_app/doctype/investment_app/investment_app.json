@@ -16,6 +16,7 @@
   "party_type",
   "party",
   "investment_status",
+  "withhold_tax",
   "column_break_bpehu",
   "party_name",
   "amount",
@@ -23,6 +24,7 @@
   "interets_withrowned",
   "remarks",
   "interest_rate",
+  "investment_period",
   "start_date",
   "end_date",
   "percent_amount",
@@ -39,7 +41,9 @@
   "investor_account_number",
   "column_break_vr5fd",
   "investor_account_name",
-  "workflow"
+  "workflow",
+  "amount_in_words",
+  "adress"
  ],
  "fields": [
   {
@@ -152,8 +156,7 @@
    "fieldname": "investment_schedule",
    "fieldtype": "Table",
    "label": "Schedule Amount",
-   "options": "Investment Schedule",
-   "read_only": 1
+   "options": "Investment Schedule"
   },
   {
    "fieldname": "pay_to",
@@ -250,12 +253,37 @@
    "fieldtype": "Link",
    "label": "workflow",
    "options": "Workflow"
+  },
+  {
+   "fieldname": "investment_period",
+   "fieldtype": "Select",
+   "label": "Investment Period",
+   "options": "\n6 Months\n1 Year\n2 Years\n3 Years\n4 Years\n5 Years\n6 Years"
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "amount_in_words",
+   "fieldtype": "Data",
+   "label": "Amount in words"
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "adress",
+   "fieldtype": "Data",
+   "label": "Address"
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "withhold_tax",
+   "fieldtype": "Currency",
+   "label": "Withhold Tax",
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2024-09-12 01:15:57.986355",
+ "modified": "2024-09-20 17:30:50.506920",
  "modified_by": "Administrator",
  "module": "Loan and Investment App",
  "name": "Investment App",

@@ -56,6 +56,7 @@ def get_logged_in_user_info():
             pan_number = member_data[0].custom_resident
             membership_type = member_data[0].membership_type
             custom_member_id = member_data[0].name
+            
 
         # Fetch the portfolio and withdrawal payable account settings
         accounts = frappe.db.sql("""

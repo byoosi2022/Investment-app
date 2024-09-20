@@ -6,7 +6,19 @@ from frappe.utils import getdate
 class InvestmentApp(Document):
 
     def validate(self):
-        # Set the default investment status if not already set
+          # Set the default investment status if not already set 
+        if self.transaction_type == "":
+            if self.amount > self.portifolia_account:
+                frappe.throw(_("Please Select the transtion type of your choise"))
+                
+        # Set the default investment status if not already set 
+        if self.transaction_type == "Invest":
+            if self.amount > self.portifolia_account:
+                frappe.throw(_("The Investment amount cannot exceed the available amount in the Deposit Account."))
+        if self.transaction_type == "Re-invest":
+            if self.amount > self.balance_walet:
+                frappe.throw(_("The Re-Investment amount cannot exceed the available amount in the Amount in wallet Account."))
+
         if not self.investment_status:
             self.investment_status = "Received"
 
@@ -35,28 +47,13 @@ class InvestmentApp(Document):
         # Check if the withdrawal amount exceeds the available wallet amount
         if self.amount > self.available_amount_in_wallet:
             frappe.throw(_("The withdrawal amount cannot exceed the available amount in the wallet."))
+            
+        # Check if the withdrawal's posting date is beyond the current date
+        current_date = getdate(frappe.utils.today())
+        if getdate(self.posting_date) > current_date:
+            frappe.throw(_("You cannot withdraw funds beyond today's date ({0}).").format(current_date))
 
-        # Fetch and sort all investments related by amount in descending order
-        investments = self.fetch_investments_for_party()
-        investments.sort(key=lambda x: x['amount'], reverse=True)  # Assuming 'amount' is a field in the Investment App
 
-        # Check if the withdrawal's posting date is less than the end date of any investment
-        for investment in investments:
-            if getdate(self.posting_date) < getdate(investment['end_date']):
-                frappe.throw(_("You cannot withdraw funds before the end date of the investment: {0}.").format(investment['end_date']))
-
-    def fetch_investments_for_party(self):
-        """Fetch investments related to the specific party."""
-        return frappe.get_list(
-            'Investment App',
-            fields=['name', 'end_date', 'posting_date', 'amount'],  # Added 'amount' field
-            filters={
-                'party': self.party,  # Filter by the specific party
-                'transaction_type': ['in', ['Re-invest', 'Invest']],
-                'docstatus': ['!=', 2],  # Exclude canceled records
-                'investment_status': 'Approved'
-            }
-        )
 
 
     def on_submit(self):

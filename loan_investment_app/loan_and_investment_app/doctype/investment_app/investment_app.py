@@ -52,8 +52,81 @@ class InvestmentApp(Document):
         current_date = getdate(frappe.utils.today())
         if getdate(self.posting_date) > current_date:
             frappe.throw(_("You cannot withdraw funds beyond today's date ({0}).").format(current_date))
+        # Get the logged-in user
+        user = frappe.session.user
 
+         # Skip validation for users without the "Investor" role and administrators
+        if not "Investor" in frappe.get_roles(user) or "Administrator" in frappe.get_roles(user):
+            frappe.logger().debug(f"User {user} is either not an Investor or is an Administrator, skipping investment validation")
+            return  # Exit validation for users without the "Investor" role or administrators
 
+        # Log that the user has the "Investor" role
+        frappe.logger().debug(f"User {user} has Investor role")
+
+        # Fetch the investments for the current party associated with the investor
+        investments = self.fetch_investments_for_party()
+
+        # If no investments are found, block the save
+        if not investments:
+            frappe.throw(
+                _("No investments found for the current investor. Please create an investment before saving.")
+            )
+
+        # Extract the month and year from the current document's posting_date
+        posting_date = getdate(self.posting_date)
+        posting_year = posting_date.year
+        posting_month = posting_date.month
+
+        # Flag to allow saving if a valid investment is found
+        allow_save = False
+
+        # Iterate through the investments and compare month and year
+        for investment in investments:
+            investment_end_date = getdate(investment["end_date"])
+            investment_year = investment_end_date.year
+            investment_month = investment_end_date.month
+
+            # Check if the month and year match
+            if investment_year == posting_year and investment_month == posting_month:
+                # Allow save if the posting_date is equal to or greater than the investment's end_date
+                if posting_date >= investment_end_date:
+                    allow_save = True
+                    break  # Exit the loop if a valid date is found
+                else:
+                    frappe.throw(
+                        _("The posting date {0} must be greater than or equal to the end date {1} of investment {2} in the same month and year. Please select a valid posting date.")
+                        .format(self.posting_date, investment["end_date"], investment["name"])
+                    )
+
+        # If no valid investment was found, block the save
+        if not allow_save:
+            frappe.throw(
+                _("The posting date {0} does not meet the condition of any investment's end date within the same month and year.")
+                .format(self.posting_date)
+            )
+
+    def fetch_investments_for_party(self):
+        # Get the logged-in user
+        user = frappe.session.user
+
+        # Get the member name associated with the user
+        party = frappe.db.get_value("Member", {"owner": user}, "name")
+        
+        # If no party is found, return an empty list or handle accordingly
+        if not party:
+            return []
+
+        # Fetch investments related to the specific party
+        return frappe.get_list(
+            'Investment App',
+            fields=['name', 'end_date', 'posting_date', 'amount', 'party_name'],
+            filters={
+                'party': party,  # Filter by the specific party
+                'transaction_type': ['in', ['Re-invest', 'Invest']],
+                'docstatus': ['!=', 2],  # Exclude canceled records
+                'investment_status': 'Approved'
+            }
+        )
 
 
     def on_submit(self):

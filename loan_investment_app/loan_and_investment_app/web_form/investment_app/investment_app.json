@@ -24,7 +24,7 @@
  "list_columns": [],
  "login_required": 0,
  "max_attachment_size": 0,
- "modified": "2024-09-20 17:28:50.497858",
+ "modified": "2024-09-20 18:36:53.202041",
  "modified_by": "Administrator",
  "module": "Loan and Investment App",
  "name": "investment-app",
@@ -46,6 +46,19 @@
    "label": "Posting Date",
    "max_length": 0,
    "max_value": 0,
+   "read_only": 0,
+   "reqd": 0,
+   "show_in_filter": 0
+  },
+  {
+   "allow_read_on_all_link_options": 0,
+   "fieldname": "transaction_type",
+   "fieldtype": "Select",
+   "hidden": 0,
+   "label": "Transaction Type",
+   "max_length": 0,
+   "max_value": 0,
+   "options": "\nDeposit\nInvest\nWithdraw\nRe-invest\nRequest for Payments",
    "read_only": 0,
    "reqd": 0,
    "show_in_filter": 0

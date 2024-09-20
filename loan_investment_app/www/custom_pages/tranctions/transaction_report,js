@@ -1,0 +1,19 @@
+document.addEventListener('DOMContentLoaded', function() {
+    const filterSelect = document.getElementById('transaction-filter');
+    const tableRows = document.querySelectorAll('#report-tbody tr');
+
+    filterSelect.addEventListener('change', function() {
+        const filterValue = filterSelect.value;
+
+        tableRows.forEach(row => {
+            const transactionType = row.querySelector('td').innerText; // First cell (Transaction Type)
+            
+            // Show all rows if "All" is selected, otherwise filter by the selected value
+            if (filterValue === 'All' || transactionType === filterValue) {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
+        });
+    });
+});

@@ -3,14 +3,58 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Link to external CSS file -->
     <link rel="stylesheet" href="../../assets/loan_investment_app/css/transaction_report.css">
     <title>{{ title }}</title>
+    <style>
+        /* Styling for the filter dropdown container */
+.filter-container {
+    margin-bottom: 20px; /* Adds space below the filter */
+}
+
+/* Label for the filter dropdown */
+label {
+    font-weight: bold; /* Makes the label text bold */
+    margin-right: 10px; /* Adds space between the label and the dropdown */
+    font-size: 1rem; /* Sets the font size */
+}
+
+/* Styling for the dropdown itself */
+#transaction-filter {
+    padding: 5px; /* Adds padding inside the dropdown */
+    font-size: 1rem; /* Sets a readable font size */
+    border: 1px solid #ccc; /* Adds a subtle border */
+    border-radius: 4px; /* Rounds the corners slightly */
+    background-color: #f9f9f9; /* Light background color */
+    width: 200px; /* Sets the width of the dropdown */
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1); /* Adds a slight shadow for depth */
+}
+
+/* Styling when the dropdown is focused (clicked) */
+#transaction-filter:focus {
+    outline: none; /* Removes the default browser outline */
+    border-color: #007bff; /* Changes border color when focused */
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* Adds a blue shadow when focused */
+}
+
+    </style>
 </head>
+
 <body>
     {% include "loan_investment_app/templates/includes/sidebar.html" %}
     <div class="content">
         <h2>{{ title }}</h2>
+
+        <!-- Filter Dropdown -->
+        <label for="transaction-filter">Filter by Transaction Type:</label>
+        <select id="transaction-filter">
+            <option value="All">All</option>
+            <option value="Deposit">Deposit</option>
+            <option value="Invest">Invest</option>
+            <option value="Withdraw">Withdraw</option>
+            <option value="Re-invest">Re-invest</option>
+            <option value="Request for Payments">Request for Payments</option>
+        </select>
+
         <table>
             <thead>
                 <tr>
@@ -22,29 +66,42 @@
                     <th>End Date</th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody id="report-tbody">
                 {% for row in report_data %}
                 <tr>
                     <td>{{ row.transaction_type }}</td>
                     <td>{{ row.investment_status }}</td>
-                    <td >{{ row.posting_date }}</td>
+                    <td>{{ row.posting_date }}</td>
                     <td class="align-right">{{ '{:,.2f}'.format(row.amount) }}</td>
                     <td class="start-date">{{ row.start_date }}</td>
                     <td class="end-date">{{ row.end_date }}</td>
                 </tr>
                 {% endfor %}
             </tbody>
-            <!-- <tfoot>
-                <tr>
-                    <td colspan="3" style="text-align: right;"><strong>Total:</strong></td>
-                    <td class="align-right"><span>{{ '{:,.2f}'.format(total_principal) }}</span></td>
-                    <td class="align-right"><span></span></td>
-                    <td class="align-right"><span></span></td>
-              
-                </tr>
-            </tfoot> -->
         </table>
     </div>
-    <script src="./transaction_report.js"></script>
+
+    <!-- Embedded JavaScript to filter table -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const filterSelect = document.getElementById('transaction-filter');
+            const tableRows = document.querySelectorAll('#report-tbody tr');
+
+            filterSelect.addEventListener('change', function() {
+                const filterValue = filterSelect.value;
+
+                tableRows.forEach(row => {
+                    const transactionType = row.querySelector('td').innerText; // First cell (Transaction Type)
+                    
+                    // Show all rows if "All" is selected, otherwise filter by the selected value
+                    if (filterValue === 'All' || transactionType === filterValue) {
+                        row.style.display = '';
+                    } else {
+                        row.style.display = 'none';
+                    }
+                });
+            });
+        });
+    </script>
 </body>
 </html>

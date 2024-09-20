@@ -24,7 +24,7 @@
  "list_columns": [],
  "login_required": 0,
  "max_attachment_size": 0,
- "modified": "2024-09-12 00:16:50.461317",
+ "modified": "2024-09-15 23:46:40.995289",
  "modified_by": "Administrator",
  "module": "Loan and Investment App",
  "name": "investment-app",
@@ -35,6 +35,7 @@
  "show_attachments": 0,
  "show_list": 0,
  "show_sidebar": 1,
+ "success_url": "/custom_pages/tranctions/transaction_report",
  "title": "Investment",
  "web_form_fields": [
   {

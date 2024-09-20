@@ -245,7 +245,6 @@
    "read_only": 1
   },
   {
-   "default": "Investment App (Request for Payment) Workflow",
    "fieldname": "workflow",
    "fieldtype": "Link",
    "label": "workflow",
@@ -255,7 +254,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2024-09-12 01:15:57.986355",
+ "modified": "2024-09-16 00:05:32.735133",
  "modified_by": "Administrator",
  "module": "Loan and Investment App",
  "name": "Investment App",

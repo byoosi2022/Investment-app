@@ -225,7 +225,7 @@ fixtures = [
             ["module", "=", "Loan and Investment App"]
         ]
     },
-
+1
 ]
 
 # Authentication and authorization

@@ -17,6 +17,8 @@
   "party",
   "investment_status",
   "withhold_tax",
+  "total_interest_amount",
+  "total_amount_after_tax",
   "column_break_bpehu",
   "party_name",
   "amount",
@@ -248,6 +250,7 @@
    "read_only": 1
   },
   {
+   "default": "Investment App (Request for Payment) Workflow",
    "fieldname": "workflow",
    "fieldtype": "Link",
    "label": "workflow",
@@ -277,12 +280,23 @@
    "fieldtype": "Currency",
    "label": "Withhold Tax",
    "read_only": 1
+  },
+  {
+   "fieldname": "total_interest_amount",
+   "fieldtype": "Currency",
+   "label": "Total interest  Amount After Tax",
+   "read_only": 1
+  },
+  {
+   "fieldname": "total_amount_after_tax",
+   "fieldtype": "Currency",
+   "label": "Total Amount after Tax"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2024-09-20 17:30:50.506920",
+ "modified": "2024-09-23 12:47:57.575618",
  "modified_by": "Administrator",
  "module": "Loan and Investment App",
  "name": "Investment App",

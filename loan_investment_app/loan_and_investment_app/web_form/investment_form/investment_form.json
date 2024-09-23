@@ -22,7 +22,7 @@
  "list_columns": [],
  "login_required": 0,
  "max_attachment_size": 0,
- "modified": "2024-09-18 13:52:41.635064",
+ "modified": "2024-09-21 06:45:25.792859",
  "modified_by": "Administrator",
  "module": "Loan and Investment App",
  "name": "investment-form",
@@ -82,19 +82,6 @@
    "max_length": 0,
    "max_value": 0,
    "options": "Email",
-   "read_only": 0,
-   "reqd": 0,
-   "show_in_filter": 0
-  },
-  {
-   "allow_read_on_all_link_options": 0,
-   "fieldname": "custom_resident",
-   "fieldtype": "Data",
-   "hidden": 0,
-   "label": "Home Address",
-   "max_length": 0,
-   "max_value": 0,
-   "options": "",
    "read_only": 0,
    "reqd": 0,
    "show_in_filter": 0

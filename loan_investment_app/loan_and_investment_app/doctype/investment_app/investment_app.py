@@ -8,8 +8,7 @@ class InvestmentApp(Document):
     def validate(self):
           # Set the default investment status if not already set 
         if self.transaction_type == "":
-            if self.amount > self.portifolia_account:
-                frappe.throw(_("Please Select the transtion type of your choise"))
+            frappe.throw(_("Please Select the transtion type of your choise"))
                 
         # Set the default investment status if not already set 
         if self.transaction_type == "Invest":
@@ -44,7 +43,7 @@ class InvestmentApp(Document):
 
     def validate_withdrawal(self):
         """Validate withdrawal amount and investment end dates."""
-        # Check if the withdrawal amount exceeds the available wallet amount
+        # Check if the withdrawal amount exceeds the available wallet amount total_amount_after_tax
         if self.amount > self.available_amount_in_wallet:
             frappe.throw(_("The withdrawal amount cannot exceed the available amount in the wallet."))
             
@@ -110,7 +109,9 @@ class InvestmentApp(Document):
         user = frappe.session.user
 
         # Get the member name associated with the user
-        party = frappe.db.get_value("Member", {"owner": user}, "name")
+        # party = frappe.db.get_value("Member", {"owner": user}, "name")
+        party = frappe.db.get_value("Member", {"email_id": user}, "name")
+
         
         # If no party is found, return an empty list or handle accordingly
         if not party:
@@ -130,10 +131,21 @@ class InvestmentApp(Document):
 
 
     def on_submit(self):
+        """Validate withdrawal amount and investment end dates."""
+        # Check if the withdrawal amount exceeds the available wallet amount total_amount_after_tax
+        if self.transaction_type == "Withdraw":
+            if self.amount > self.total_amount_after_tax:
+                frappe.throw(_("The withdrawal amount cannot exceed the available Total amount after tax."))
+    
+        # Create journal entry and schedule journal entries
         self.create_journal_entry()
         self.create_schedule_journal_entries()
+    
+        # Update investment status
         self.investment_status = "Approved"
-        self.save()  # Save the document after updating the status
+    
+        # Save the document after updating the status
+        self.save()
 
     @frappe.whitelist()
     def create_journal_entry(self):
@@ -165,11 +177,12 @@ class InvestmentApp(Document):
                 self.add_journal_entry_row(journal_entry, accounts['portfolio_account'], 0, self.amount, cost_center=accounts['cost_center'])
 
             elif self.transaction_type == "Withdraw":
-                self.add_journal_entry_row(journal_entry, accounts['withdrawal_payable_account'], 0, self.withdraw_grand_totals, cost_center=accounts['cost_center'])
+                self.add_journal_entry_row(journal_entry, accounts['withdrawal_payable_account'], 0, self.total_amount_after_tax, cost_center=accounts['cost_center'])
+                self.add_journal_entry_row(journal_entry, accounts['witholding_tax_payable'], 0, self.withhold_tax, cost_center=accounts['cost_center'])
                 self.add_journal_entry_row(journal_entry, accounts['portfolio_account'], self.amount_withrowned, 0, cost_center=accounts['cost_center'])
-                self.add_journal_entry_row(journal_entry, accounts['investment_interest'], self.interets_withrowned, 0, cost_center=accounts['cost_center'])
-                # self.add_journal_entry_row(journal_entry, default_paid_to_account, 0, self.amount, cost_center=accounts['cost_center'])
-
+                self.add_journal_entry_row(journal_entry, accounts['investment_interest'], self.total_interest_amount, 0, cost_center=accounts['cost_center'])
+                self.add_journal_entry_row(journal_entry, accounts['investment_interest'], self.withhold_tax, 0, cost_center=accounts['cost_center'])
+              
             elif self.transaction_type == "Re-invest":
                 self.add_journal_entry_row(journal_entry, accounts['withdrawal_payable_account'], self.amount, 0, cost_center=accounts['cost_center'])
                 self.add_journal_entry_row(journal_entry, accounts['portfolio_account'], 0, self.amount, cost_center=accounts['cost_center'])
@@ -253,7 +266,7 @@ class InvestmentApp(Document):
     def get_investment_accounts(self):
         investment_account = frappe.db.sql("""
             SELECT capital_account, investment_interest, percent_interest_amount_account,
-            portfolio_account, company, cost_center,investor_withdrawal_payable_account
+            portfolio_account, company, witholding_tax_payable,cost_center,investor_withdrawal_payable_account
             FROM `tabInvestment Settings`
             LIMIT 1
         """, as_dict=True)
@@ -264,6 +277,7 @@ class InvestmentApp(Document):
         return {
             'capital_account': investment_account[0]['capital_account'],
             'company_set': investment_account[0]['company'],
+            'witholding_tax_payable': investment_account[0]['witholding_tax_payable'],
             'cost_center': investment_account[0]['cost_center'],
             'portfolio_account': investment_account[0]['portfolio_account'],
             'investment_interest': investment_account[0]['investment_interest'],

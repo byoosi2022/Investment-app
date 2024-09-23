@@ -109,7 +109,7 @@ function populate_schedule_table(transaction_type, start_date, end_date) {
                 end_date: end_date       // Pass end date as argument
             },
             callback: function (response) {
-                // console.log(response);
+                console.log(response.message);
                 if (response.message) {
                     // Clear existing rows in the investment_schedule child table
                     let child_table = frappe.web_form.get_field('investment_schedule');
@@ -206,8 +206,8 @@ function populate_schedule_table(transaction_type, start_date, end_date) {
             frappe.web_form.set_df_property('investor_account_number', 'hidden', 1);
             frappe.web_form.set_df_property('investor_account_name', 'hidden', 1);
             frappe.web_form.set_df_property('balance_walet', 'hidden', 0);
-            frappe.web_form.set_df_property('amount_withrowned', 'hidden', 1);
-            frappe.web_form.set_df_property('interets_withrowned', 'hidden', 1);
+            frappe.web_form.set_df_property('amount_withrowned', 'hidden', 0);
+            frappe.web_form.set_df_property('interets_withrowned', 'hidden', 0);
         }
         
         
@@ -219,7 +219,7 @@ function populate_schedule_table(transaction_type, start_date, end_date) {
             frappe.web_form.set_df_property('percent_amount', 'hidden', 1);
             frappe.web_form.set_df_property('mode_of_payment', 'hidden', 1);
             frappe.web_form.set_df_property('investment_schedule', 'hidden', 1);
-            frappe.web_form.set_df_property('withdral_amount', 'hidden', 1);
+            frappe.web_form.set_df_property('withdral_amount', 'hidden', 0);
             frappe.web_form.set_df_property('investor_bank_name', 'hidden', 0);
             frappe.web_form.set_df_property('investor_account_number', 'hidden', 0);
             frappe.web_form.set_df_property('investor_account_name', 'hidden', 0);
@@ -403,7 +403,5 @@ function populate_investment_schedule() {
         // frappe.msgprint(__('Please make sure all required fields are filled.'));
     }
 }
-
-
     
 });

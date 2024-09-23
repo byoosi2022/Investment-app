@@ -49,8 +49,8 @@ frappe.ui.form.on('Investment App', {
 
 function calculate_and_populate_schedule(frm) {
     // Calculate percentage amount and withdrawal amount
-    let percent_amount = (frm.doc.interest_rate / 100) * frm.doc.amount;
-    let withdraw_amount = frm.doc.amount + percent_amount;
+    let percent_amount = (frm.doc.interest_rate / 100) * frm.doc.amount_withrowned;
+    let withdraw_amount = frm.doc.amount_withrowned + percent_amount;
     frm.set_value('percent_amount', percent_amount);
     frm.set_value('withdral_amount', withdraw_amount); // Corrected the field name
 

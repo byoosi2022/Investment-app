@@ -21,7 +21,7 @@ frappe.ui.form.on('Investment App', {
         update_party_name(frm);
     },
 
-        interest_rate: function(frm) {
+    interest_rate: function(frm) {
         calculate_and_populate_schedule(frm);
     },
     amount: function(frm) {
@@ -47,12 +47,14 @@ frappe.ui.form.on('Investment App', {
     
 });
 
+
 function calculate_and_populate_schedule(frm) {
-    // Calculate percentage amount and withdrawal amount
-    let percent_amount = (frm.doc.interest_rate / 100) * frm.doc.amount_withrowned;
-    let withdraw_amount = frm.doc.amount_withrowned + percent_amount;
+    // Calculate percentage amount and withdrawal amount transaction_type === 'Invest' || transaction_type === 'Re-invest'
+    let percent_amount = (frm.doc.interest_rate / 100) * frm.doc.amount;
+    let withdraw_amount = frm.doc.amount + percent_amount;
     frm.set_value('percent_amount', percent_amount);
     frm.set_value('withdral_amount', withdraw_amount); // Corrected the field name
+    
 
     if (frm.doc.interest_rate && frm.doc.amount && frm.doc.start_date) {
         // Initialize principal amount

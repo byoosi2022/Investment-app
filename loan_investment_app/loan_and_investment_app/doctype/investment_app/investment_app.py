@@ -1,41 +1,44 @@
 import frappe
 from frappe import _
 from frappe.model.document import Document
-from frappe.utils import getdate
+from frappe.utils import getdate, flt
 
 class InvestmentApp(Document):
 
     def validate(self):
-          # Set the default investment status if not already set 
-        if self.transaction_type == "":
-            frappe.throw(_("Please Select the transtion type of your choise"))
-                
-        # Set the default investment status if not already set 
+      
+        # Ensure transaction type is set
+        if not self.transaction_type:
+            frappe.throw(_("Please select the transaction type of your choice."))
+
+        # Validate transaction amounts based on the transaction type
         if self.transaction_type == "Invest":
             if self.amount > self.portifolia_account:
-                frappe.throw(_("The Investment amount cannot exceed the available amount in the Deposit Account."))
-        if self.transaction_type == "Re-invest":
-            if self.amount > self.balance_walet:
-                frappe.throw(_("The Re-Investment amount cannot exceed the available amount in the Amount in wallet Account."))
+                frappe.throw(_("The investment amount cannot exceed the available amount in the Deposit Account."))
 
+        elif self.transaction_type == "Re-invest":
+            if self.amount > self.balance_walet:
+                frappe.throw(_("The re-investment amount cannot exceed the available amount in the Amount in Wallet Account."))
+
+        # Set default investment status
         if not self.investment_status:
             self.investment_status = "Received"
 
-        # Validate transaction amounts based on the type of transaction
+        # Ensure that the amount is not negative or None
+        if self.amount is None:
+            frappe.throw(_("The transaction amount cannot be empty."))
+
+        if self.amount <= 0:
+            frappe.throw(_("The transaction amount should be a positive value."))
+
+        # Validate specific transaction types
         if self.transaction_type == "Request for Payments":
             self.validate_payment_request()
 
         elif self.transaction_type == "Withdraw":
             self.validate_withdrawal()
-
-        # Ensure that the amount is not negative or None for any transaction type
-        if self.amount is None:
-            frappe.throw(_("The transaction amount cannot be empty."))
-        
-        if self.amount <= 0:
-            frappe.throw(_("The transaction amount should be a positive value."))
-
-
+         
+    
     def validate_payment_request(self):
         """Validate payment request amount against the wallet balance."""
         if self.amount > self.balance_walet:  # Ensure 'balance_wallet' is used correctly
@@ -44,8 +47,8 @@ class InvestmentApp(Document):
     def validate_withdrawal(self):
         """Validate withdrawal amount and investment end dates."""
         # Check if the withdrawal amount exceeds the available wallet amount total_amount_after_tax
-        if self.amount > self.available_amount_in_wallet:
-            frappe.throw(_("The withdrawal amount cannot exceed the available amount in the wallet."))
+        if self.amount > self.total_amount_invested:
+            frappe.throw(_("The withdrawal amount cannot exceed the available amount invested + interests."))
             
         # Check if the withdrawal's posting date is beyond the current date
         current_date = getdate(frappe.utils.today())
@@ -134,9 +137,12 @@ class InvestmentApp(Document):
         """Validate withdrawal amount and investment end dates."""
         # Check if the withdrawal amount exceeds the available wallet amount total_amount_after_tax
         if self.transaction_type == "Withdraw":
+          
             if self.amount > self.total_amount_after_tax:
                 frappe.throw(_("The withdrawal amount cannot exceed the available Total amount after tax."))
-    
+            
+            # Call the method to update withdrawal amounts for specific investments
+            self.update_withdrawal_amounts_for_specific_investments()
         # Create journal entry and schedule journal entries
         self.create_journal_entry()
         self.create_schedule_journal_entries()
@@ -147,6 +153,45 @@ class InvestmentApp(Document):
         # Save the document after updating the status
         self.save()
 
+    def update_withdrawal_amounts_for_specific_investments(self):
+        # Fetch Investment App documents with filters
+        investments = frappe.get_all(
+            "Investment App",
+            filters={
+                "party": self.party,  # Match party with the current instance's party
+                "end_date": self.posting_date,  # Match end_date with posting_date from the current instance
+                "transaction_type": ["in", ["Re-invest", "Invest"]]  # Match transaction type
+            },
+            fields=["name", "posting_date", "end_date", "withdral_amount", "amount", "party", "transaction_type"]
+        )
+
+        for investment in investments:
+            investment_doc = frappe.get_doc("Investment App", investment.name)
+            
+            total_amount = flt(self.amount_withrowned) + flt(self.interets_withrowned)
+
+            # Calculate the new withdrawal_amount
+            new_withdrawal_amount = flt(investment_doc.withdral_amount) - total_amount  # Ensure calculations are float
+
+            # Ensure withdrawal_amount does not go below zero
+            if new_withdrawal_amount < 0:
+                frappe.throw(_("Withdrawal amount cannot be negative for {0}. Current amount: {1}, Deduction: {2}").format(
+                    investment_doc.name, investment_doc.withdral_amount, investment_doc.amount))
+
+            # Update the withdrawal_amount
+            investment_doc.withdral_amount = new_withdrawal_amount
+
+            # Set or retain the party field
+            if not investment_doc.party:  # If party is not set, assign a default value
+                investment_doc.party = self.party  # Retain the current party
+
+            # Save the updated document
+            investment_doc.save(ignore_permissions=True)
+
+            # Show a message to the user
+            frappe.msgprint(_("Withdrawal amount updated to {0} for {1}. Party set to {2}.").format(
+                new_withdrawal_amount, investment_doc.name, investment_doc.party))         
+ 
     @frappe.whitelist()
     def create_journal_entry(self):
         try:

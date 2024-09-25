@@ -2,136 +2,144 @@
 // For license information, please see license.txt
 frappe.ui.form.on('Investment App', {
     // Triggered when the form is refreshed
-    refresh: function(frm) {
+    onload: function (frm) {
         handle_transaction_type(frm);
     },
-    refresh: function(frm) {
+    refresh: function (frm) {
         if (!frm.doc.investment_schedule || frm.doc.investment_schedule.length === 0) {
             calculate_and_populate_schedule(frm);
-             // Save the document after populating the schedule
-             frm.save();
+            // Save the document after populating the schedule
+            frm.save();
         }
     },
     // Triggered when transaction_type field is changed
-    transaction_type: function(frm) {
+    transaction_type: function (frm) {
         handle_transaction_type(frm);
     },
 
-    party: function(frm) {
+    party: function (frm) {
         update_party_name(frm);
     },
 
-    interest_rate: function(frm) {
+    interest_rate: function (frm) {
         calculate_and_populate_schedule(frm);
     },
-    amount: function(frm) {
+    amount: function (frm) {
         calculate_and_populate_schedule(frm);
     },
-    start_date: function(frm) {
+    start_date: function (frm) {
         if (frm.doc.investment_period) {
             populate_investment_schedule(frm);
         }
     },
-    end_date: function(frm) {
-        if (frm.doc.investment_period && frm.doc.start_date) { 
+    end_date: function (frm) {
+        if (frm.doc.investment_period && frm.doc.start_date) {
             populate_investment_schedule(frm);
         }
     },
-    investment_period: function(frm) {
-        if (frm.doc.investment_period) { 
+    investment_period: function (frm) {
+        if (frm.doc.investment_period) {
             set_end_date(frm); // Ensure end date is set first
             populate_investment_schedule(frm);
         }
     }
-    
-    
+
+
 });
 
 
 function calculate_and_populate_schedule(frm) {
     // Calculate percentage amount and withdrawal amount transaction_type === 'Invest' || transaction_type === 'Re-invest'
-    let percent_amount = (frm.doc.interest_rate / 100) * frm.doc.amount;
-    let withdraw_amount = frm.doc.amount + percent_amount;
-    frm.set_value('percent_amount', percent_amount);
-    frm.set_value('withdral_amount', withdraw_amount); // Corrected the field name
-    
+    if (frm.doc.transaction_type === 'Invest' || frm.doc.transaction_type === 'Re-invest') {
+        let percent_amount = (frm.doc.interest_rate / 100) * frm.doc.amount;
+        let withdraw_amount = frm.doc.amount + percent_amount;
+        frm.set_value('percent_amount', percent_amount);
+        frm.set_value('withdral_amount', withdraw_amount); // Corrected the field name
 
-    if (frm.doc.interest_rate && frm.doc.amount && frm.doc.start_date) {
-        // Initialize principal amount
-        let principal_amount = frm.doc.amount;
+        frm.set_df_property('withhold_tax', 'hidden', 1);
+        frm.set_df_property('total_interest_amount', 'hidden', 1);
+        frm.set_df_property('total_amount_after_tax', 'hidden', 1);
 
-        // Parse start and end dates
-        let start_date = frappe.datetime.str_to_obj(frm.doc.start_date);
-        let end_date = frm.doc.end_date ? frappe.datetime.str_to_obj(frm.doc.end_date) : null;
 
-        // Calculate the difference in months between start and end dates
-        let months_diff;
-        if (end_date) {
-            let start_year = start_date.getFullYear();
-            let start_month = start_date.getMonth();
-            let end_year = end_date.getFullYear();
-            let end_month = end_date.getMonth();
 
-            months_diff = (end_year - start_year) * 12 + (end_month - start_month);
+        if (frm.doc.interest_rate && frm.doc.amount && frm.doc.start_date) {
+            // Initialize principal amount
+            let principal_amount = frm.doc.amount;
 
-            // Include the last month if the end date is after the start date
-            if (start_date.getDate() <= end_date.getDate()) {
-                months_diff += 1; // Include the last month
+            // Parse start and end dates
+            let start_date = frappe.datetime.str_to_obj(frm.doc.start_date);
+            let end_date = frm.doc.end_date ? frappe.datetime.str_to_obj(frm.doc.end_date) : null;
+
+            // Calculate the difference in months between start and end dates
+            let months_diff;
+            if (end_date) {
+                let start_year = start_date.getFullYear();
+                let start_month = start_date.getMonth();
+                let end_year = end_date.getFullYear();
+                let end_month = end_date.getMonth();
+
+                months_diff = (end_year - start_year) * 12 + (end_month - start_month);
+
+                // Include the last month if the end date is after the start date
+                if (start_date.getDate() <= end_date.getDate()) {
+                    months_diff += 1; // Include the last month
+                }
+            } else {
+                // Default to 12 months if no end date is provided
+                months_diff = 12;
             }
-        } else {
-            // Default to 12 months if no end date is provided
-            months_diff = 12;
+
+            // Calculate monthly amount based on percentage amount
+            let monthly_amount = percent_amount / months_diff;
+
+            // Start available amount at 31000 instead of 30000
+            let available_amount = principal_amount + monthly_amount;
+
+            // Clear existing schedule table
+            frm.clear_table('investment_schedule');
+
+            // Populate the Investment Schedule table
+            for (let i = 0; i < months_diff; i++) {
+                let scheduled_date = frappe.datetime.add_months(start_date, i);
+
+                // Ensure scheduled_date is a valid Date object
+                if (typeof scheduled_date === "string") {
+                    scheduled_date = frappe.datetime.str_to_obj(scheduled_date);
+                }
+
+                // Validate the date object
+                if (!(scheduled_date instanceof Date) || isNaN(scheduled_date)) {
+                    console.error("Invalid scheduled date", scheduled_date);
+                    continue; // Skip invalid date
+                }
+
+                // Add the monthly increment to the available amount starting from the second month
+                if (i > 0) {
+                    available_amount += monthly_amount;
+                }
+
+                // Format the scheduled date
+                let formatted_start_date = frappe.datetime.obj_to_str(scheduled_date);
+
+                // Calculate and format the end date (add 28 days to the scheduled start date)
+                let scheduled_end_date = new Date(scheduled_date);
+                scheduled_end_date.setDate(scheduled_end_date.getDate() + 28);
+                let formatted_end_date = frappe.datetime.obj_to_str(scheduled_end_date);
+
+                // Add the new row to the schedule
+                frm.add_child('investment_schedule', {
+                    start_date: formatted_start_date,
+                    end_date: formatted_end_date,
+                    principal_amount: i === 0 ? principal_amount : 0, // Set principal_amount only for the first month
+                    available_amount: available_amount, // Incremented value for each month
+                    amount: monthly_amount // Constant monthly amount
+                });
+            }
+
+            // Update the schedule table
+            frm.refresh_field('investment_schedule');
         }
 
-        // Calculate monthly amount based on percentage amount
-        let monthly_amount = percent_amount / months_diff;
-
-        // Start available amount at 31000 instead of 30000
-        let available_amount = principal_amount + monthly_amount;
-
-        // Clear existing schedule table
-        frm.clear_table('investment_schedule');
-
-        // Populate the Investment Schedule table
-        for (let i = 0; i < months_diff; i++) {
-            let scheduled_date = frappe.datetime.add_months(start_date, i);
-            
-            // Ensure scheduled_date is a valid Date object
-            if (typeof scheduled_date === "string") {
-                scheduled_date = frappe.datetime.str_to_obj(scheduled_date);
-            }
-            
-            // Validate the date object
-            if (!(scheduled_date instanceof Date) || isNaN(scheduled_date)) {
-                console.error("Invalid scheduled date", scheduled_date);
-                continue; // Skip invalid date
-            }
-
-            // Add the monthly increment to the available amount starting from the second month
-            if (i > 0) {
-                available_amount += monthly_amount;
-            }
-
-            // Format the scheduled date
-            let formatted_start_date = frappe.datetime.obj_to_str(scheduled_date);
-
-            // Calculate and format the end date (add 28 days to the scheduled start date)
-            let scheduled_end_date = new Date(scheduled_date);
-            scheduled_end_date.setDate(scheduled_end_date.getDate() + 28);
-            let formatted_end_date = frappe.datetime.obj_to_str(scheduled_end_date);
-
-            // Add the new row to the schedule
-            frm.add_child('investment_schedule', {
-                start_date: formatted_start_date,
-                end_date: formatted_end_date,
-                principal_amount: i === 0 ? principal_amount : 0, // Set principal_amount only for the first month
-                available_amount: available_amount, // Incremented value for each month
-                amount: monthly_amount // Constant monthly amount
-            });
-        }
-
-        // Update the schedule table
-        frm.refresh_field('investment_schedule');
     }
 }
 
@@ -148,41 +156,108 @@ function formatDate(date) {
 
 // Function to handle the visibility of fields based on transaction_type
 function handle_transaction_type(frm) {
-    if (frm.doc.transaction_type === 'Invest' || frm.doc.transaction_type === 'Re-invest') {
-        // Make fields visible for 'Invest' and 'Re-invest'
-        frm.set_df_property('interest_rate', 'hidden', 0);
-        frm.set_df_property('start_date', 'hidden', 0);
-        frm.set_df_property('end_date', 'hidden', 0);
-        frm.set_df_property('percent_amount', 'hidden', 0);
-        frm.set_df_property('mode_of_payment', 'hidden', 1);
-    } else if (frm.doc.transaction_type === 'Deposit' || frm.doc.transaction_type === 'Withdraw') {
-        // Make mode_of_payment visible for 'Deposit' and 'Withdraw'
-        frm.set_df_property('interest_rate', 'hidden', 0);
-        frm.set_df_property('start_date', 'hidden', 1);
-        frm.set_df_property('end_date', 'hidden', 1);
-        frm.set_df_property('percent_amount', 'hidden', 0);
-        frm.set_df_property('mode_of_payment', 'hidden', 0);
-    } else if (frm.doc.transaction_type === 'Transfer') {
-        // Hide all fields for 'Transfer'
-        frm.set_df_property('interest_rate', 'hidden', 1);
-        frm.set_df_property('start_date', 'hidden', 1);
-        frm.set_df_property('end_date', 'hidden', 1);
-        frm.set_df_property('percent_amount', 'hidden', 1);
-        frm.set_df_property('mode_of_payment', 'hidden', 1);
-    } else {
-        // Default case: Hide all fields
-        frm.set_df_property('interest_rate', 'hidden', 0);
-        frm.set_df_property('start_date', 'hidden', 1);
-        frm.set_df_property('end_date', 'hidden', 1);
-        frm.set_df_property('percent_amount', 'hidden', 0);
-        frm.set_df_property('mode_of_payment', 'hidden', 1);
+    let fields = [
+        'interest_rate', 'investor_account_number', 'posting_date',
+        'start_date', 'withdraw_percen_amount', 'withdraw_grand_totals',
+        'investment_schedule', 'investor_account_name', 'pay_to', 'withdraw_amount',
+        'end_date', 'total_amount_invested', 'address', 'total_interest_earned',
+        'investment_period', 'balance_wallet', 'available_amount_in_wallet',
+        'amount_withdrawn', 'interest_withdrawn', 'investor_bank_name',
+        'percent_amount', 'mode_of_payment'
+    ];
+
+    // Default to hiding all fields
+    fields.forEach(field => {
+        frm.set_df_property(field, 'hidden', 1);
+    });
+
+    // Adjust visibility based on transaction_type
+    switch (frm.doc.transaction_type) {
+        case 'Invest':
+        case 'Re-invest':
+            // Make fields visible for 'Invest' and 'Re-invest' 
+            frm.set_df_property('interest_rate', 'hidden', 0);
+            frm.set_df_property('start_date', 'hidden', 0);
+            frm.set_df_property('end_date', 'hidden', 0);
+            frm.set_df_property('percent_amount', 'hidden', 0);
+            frm.set_df_property('mode_of_payment', 'hidden', 1);
+            frm.set_df_property('amount_withrowned', 'hidden', 0);
+            frm.set_df_property('interets_withrowned', 'hidden', 0);
+            frm.set_df_property('withhold_tax', 'hidden', 0);
+            frm.set_df_property('percent_amount', 'hidden', 0);
+            frm.set_df_property('total_interest_amount', 'hidden', 0);
+            frm.set_df_property('total_amount_after_tax', 'hidden', 0);
+            frm.set_df_property('interest_rate', 'hidden', 0);
+            frm.set_df_property('start_date', 'hidden', 0);
+            frm.set_df_property('end_date', 'hidden', 0);
+            frm.set_df_property('investment_period', 'hidden', 0);
+            frm.set_df_property('investment_schedule', 'hidden', 0);
+            break;
+
+        case 'Deposit':
+            // Hide specific fields for 'Request for Payments' pay_to
+            frm.set_df_property('amount_withrowned', 'hidden', 1);
+            frm.set_df_property('interets_withrowned', 'hidden', 1);
+            frm.set_df_property('withhold_tax', 'hidden', 1);
+            frm.set_df_property('mode_of_payment', 'hidden', 0);
+            frm.set_df_property('percent_amount', 'hidden', 1);
+            frm.set_df_property('total_interest_amount', 'hidden', 1);
+            frm.set_df_property('total_amount_after_tax', 'hidden', 1);
+            frm.set_df_property('interest_rate', 'hidden', 1);
+            frm.set_df_property('start_date', 'hidden', 1);
+            frm.set_df_property('end_date', 'hidden', 1);
+            frm.set_df_property('investment_period', 'hidden', 1);
+            frm.set_df_property('investor_bank_name', 'hidden', 1);
+            frm.set_df_property('investor_account_number', 'hidden', 1);
+            frm.set_df_property('investor_account_name', 'hidden', 1);
+            frm.set_df_property('pay_to', 'hidden', 1);
+            break;
+        case 'Withdraw':
+            // Make mode_of_payment visible for 'Deposit' and 'Withdraw'
+            frm.set_df_property('interest_rate', 'hidden', 0);
+            frm.set_df_property('start_date', 'hidden', 1);
+            frm.set_df_property('end_date', 'hidden', 1);
+            frm.set_df_property('percent_amount', 'hidden', 0);
+            frm.set_df_property('mode_of_payment', 'hidden', 0);
+            frm.set_df_property('withhold_tax', 'hidden', 0);
+            frm.set_df_property('total_interest_amount', 'hidden', 0);
+            frm.set_df_property('total_amount_after_tax', 'hidden', 0);
+            break;
+
+        case 'Transfer':
+            // Hide all fields for 'Transfer'
+            frm.set_df_property('interest_rate', 'hidden', 1);
+            frm.set_df_property('start_date', 'hidden', 1);
+            frm.set_df_property('end_date', 'hidden', 1);
+            frm.set_df_property('percent_amount', 'hidden', 1);
+            frm.set_df_property('mode_of_payment', 'hidden', 1);
+            break;
+
+        case 'Request for Payments':
+            // Hide specific fields for 'Request for Payments' pay_to
+            frm.set_df_property('amount_withrowned', 'hidden', 1);
+            frm.set_df_property('interets_withrowned', 'hidden', 1);
+            frm.set_df_property('withhold_tax', 'hidden', 1);
+            frm.set_df_property('percent_amount', 'hidden', 1);
+            frm.set_df_property('total_interest_amount', 'hidden', 1);
+            frm.set_df_property('total_amount_after_tax', 'hidden', 1);
+            frm.set_df_property('interest_rate', 'hidden', 1);
+            frm.set_df_property('start_date', 'hidden', 1);
+            frm.set_df_property('end_date', 'hidden', 1);
+            frm.set_df_property('investment_period', 'hidden', 1);
+            frm.set_df_property('investor_bank_name', 'hidden', 0);
+            frm.set_df_property('investor_account_number', 'hidden', 0);
+            frm.set_df_property('investor_account_name', 'hidden', 0);
+            frm.set_df_property('pay_to', 'hidden', 0);
+            break;
     }
 }
+
 
 function update_party_name(frm) {
     frappe.call({
         method: 'loan_investment_app.custom_api.user.get_party_name',
-        args:{
+        args: {
             party: frm.doc.party
         },
         callback: function (response) {
@@ -190,7 +265,7 @@ function update_party_name(frm) {
             if (response.message) {
                 // Set the fetched user information to the appropriate fields
                 frm.set_value('party_name', response.message.member_name);
-           
+
             }
         }
     });
@@ -355,7 +430,7 @@ function set_end_date(frm) {
 
         // Format the end_date to 'YYYY-MM-DD'
         let formatted_end_date = end_date.toISOString().split('T')[0]; // Extract only the date portion
-        
+
         // Set the calculated end date back into the form
         frm.set_value('end_date', formatted_end_date);
     } else {

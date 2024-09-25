@@ -30,6 +30,7 @@ frappe.ready(function () {
         frappe.web_form.on('transaction_type', function (field, value) {
             handle_transaction_type(value);
             populate_schedule_table(value)
+            frappe.web_form.set_df_property('posting_date', 'hidden', 0);
         });
 
         // Event listeners for posting_date and amount fields total_amount_invested
@@ -59,6 +60,7 @@ frappe.ready(function () {
                         if (tranct_type == 'Withdraw') {
                             frappe.web_form.set_value('amount', response.message.withdral_amount);
                             frappe.web_form.set_value('amount_withrowned', response.message.total_amount);
+                            frappe.web_form.set_value('interets_withrowned', response.message.total_percent_amount);
 
                             // frappe.web_form.set_value('interets_withrowned', response.message.total_percent_amount);
                             frappe.web_form.set_df_property('amount_withrowned', 'hidden', 0);
@@ -198,12 +200,16 @@ frappe.ready(function () {
             });
         }
     }
-
-    // Function to handle the visibility of fields based on transaction_type
+   
+    // Function to handle the visibility of fields based on transaction_type 
     function handle_transaction_type(transaction_type) {
-        const fields = ['interest_rate', 'investor_account_number', 'start_date', 'withdraw_percen_amount', 'withdraw_grand_totals',
+        const fields = ['interest_rate', 'investor_account_number', 'posting_date',
+            'start_date', 'withdraw_percen_amount', 'withdraw_grand_totals',
             'investment_schedule', 'investor_account_name', 'pay_to', 'withdral_amount',
-            'end_date','total_amount_invested', 'adress', 'total_interest_earned','investment_period', 'balance_walet', 'available_amount_in_wallet', 'amount_withrowned', 'interets_withrowned', 'investor_bank_name', 'percent_amount', 'mode_of_payment'];
+            'end_date','total_amount_invested', 'adress', 'total_interest_earned',
+            'investment_period', 'balance_walet', 'available_amount_in_wallet',
+             'amount_withrowned', 'interets_withrowned', 'investor_bank_name',
+              'percent_amount', 'mode_of_payment'];
 
         if (transaction_type === 'Invest' || transaction_type === 'Re-invest') {
             // Make fields visible for 'Invest' and 'Re-invest'
@@ -245,6 +251,9 @@ frappe.ready(function () {
             frappe.web_form.set_df_property('investor_account_number', 'hidden', 1);
             frappe.web_form.set_df_property('investor_account_name', 'hidden', 1);
             frappe.web_form.set_df_property('balance_walet', 'hidden', 0);
+            frappe.web_form.set_df_property('amount_withrowned', 'hidden', 0);
+            frappe.web_form.set_df_property('total_interest_earned', 'hidden', 0);
+            frappe.web_form.set_df_property('interets_withrowned', 'hidden', 0);
   
         }
 

@@ -24,7 +24,7 @@
  "list_columns": [],
  "login_required": 0,
  "max_attachment_size": 0,
- "modified": "2024-09-25 08:41:31.894681",
+ "modified": "2024-09-25 09:16:52.511182",
  "modified_by": "Administrator",
  "module": "Loan and Investment App",
  "name": "investment-app",
@@ -291,7 +291,7 @@
    "label": "Total Amount Invested + Interests",
    "max_length": 0,
    "max_value": 0,
-   "read_only": 0,
+   "read_only": 1,
    "reqd": 0,
    "show_in_filter": 0
   },
@@ -303,7 +303,7 @@
    "label": "Total Interest Earned",
    "max_length": 0,
    "max_value": 0,
-   "read_only": 0,
+   "read_only": 1,
    "reqd": 0,
    "show_in_filter": 0
   },

@@ -48,16 +48,26 @@ frappe.ready(function () {
                         // Set the fetched total amount to the 'total_amount_invested' field
                         frappe.web_form.set_value('total_amount_invested', response.message.withdral_amount);
                         frappe.web_form.set_value('total_interest_earned', response.message.total_percent_amount);
-                    
                         let tranct_type = frappe.web_form.get_value('transaction_type');
+
+                        // Get the raw value from the total_amount_invested field
+                        // let investedField = frappe.web_form.get_value('total_amount_invested'); 
+                                
+                   
+
                         // Call populate_schedule_table with both the start_date and end_date
                         if (tranct_type == 'Withdraw') {
                             frappe.web_form.set_value('amount', response.message.withdral_amount);
                             frappe.web_form.set_value('amount_withrowned', response.message.total_amount);
-                            frappe.web_form.set_value('interets_withrowned', response.message.total_percent_amount);
+
+                            // frappe.web_form.set_value('interets_withrowned', response.message.total_percent_amount);
+                            frappe.web_form.set_df_property('amount_withrowned', 'hidden', 0);
                             frappe.web_form.set_df_property('total_interest_earned', 'hidden', 0);
-                            frappe.web_form.set_df_property('total_amount_invested', 'hidden', 0);
-                            }
+                            frappe.web_form.set_df_property('interets_withrowned', 'hidden', 0);
+                            // Check if total_invested is zero after converting it to a float
+                                    
+                        }
+                        
                     }
                 }
             });
@@ -235,10 +245,7 @@ frappe.ready(function () {
             frappe.web_form.set_df_property('investor_account_number', 'hidden', 1);
             frappe.web_form.set_df_property('investor_account_name', 'hidden', 1);
             frappe.web_form.set_df_property('balance_walet', 'hidden', 0);
-            frappe.web_form.set_df_property('amount_withrowned', 'hidden', 0);
-            frappe.web_form.set_df_property('interets_withrowned', 'hidden', 1);
-            frappe.web_form.set_df_property('total_interest_earned', 'hidden', 1);
-            frappe.web_form.set_df_property('total_amount_invested', 'hidden', 1);
+  
         }
 
 

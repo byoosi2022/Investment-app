@@ -41,6 +41,9 @@ def get_logged_in_user_info():
 
     return user_info2
 
+import frappe
+from frappe.utils import nowdate
+
 def get_context(context, posting_date=None):
     # Get the logged-in user's information
     user_info = get_logged_in_user_info()
@@ -61,7 +64,9 @@ def get_context(context, posting_date=None):
 
     total_interest = 0  # Initialize total interest variable
     total_available = 0  # Initialize total available amount variable
-    total_principal = 0
+    total_principal = 0  # Initialize total principal amount
+
+    current_date = nowdate()  # Get the current date
 
     # Fetch investment schedule for each investment
     for investment in investments:
@@ -70,6 +75,12 @@ def get_context(context, posting_date=None):
             fields=['start_date', 'end_date', 'principal_amount', 'amount', 'available_amount'],
             filters={'parent': investment['name']}
         )
+
+        # Filter out schedules where the end_date hasn't been reached
+        investment['investment_schedule'] = [
+            schedule for schedule in investment['investment_schedule']
+            if schedule['end_date'] <= current_date  # Only fetch if end_date has passed or is today
+        ]
 
         # Sort investment_schedule by start_date in ascending order
         investment['investment_schedule'].sort(key=lambda x: x['start_date'])

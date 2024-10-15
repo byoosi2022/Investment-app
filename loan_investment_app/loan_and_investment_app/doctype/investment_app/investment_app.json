@@ -19,6 +19,7 @@
   "withhold_tax",
   "total_interest_amount",
   "total_amount_after_tax",
+  "total_interest_annually",
   "investment_period",
   "column_break_bpehu",
   "party_name",
@@ -306,12 +307,17 @@
    "fieldtype": "Currency",
    "label": "Total Interest Earned",
    "read_only": 1
+  },
+  {
+   "fieldname": "total_interest_annually",
+   "fieldtype": "Currency",
+   "label": "Total Interest Annually"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2024-09-25 11:50:05.392650",
+ "modified": "2024-10-02 10:10:31.308508",
  "modified_by": "Administrator",
  "module": "Loan and Investment App",
  "name": "Investment App",
